@@ -1,0 +1,48 @@
+{
+  "name": "@falkor/falkor-library",
+  "version": "0.3.0",
+  "description": "Shared Operations Library",
+  "author": "Barnabas Bucsy (https://github.com/theonethread)",
+  "license": "MIT",
+  "private": true,
+  "keywords": [
+    "falkor",
+    "operations",
+    "library"
+  ],
+  "type": "module",
+  "main": ".dist/index.js",
+  "module": ".dist/index.js",
+  "typings": ".dist/index.d.ts",
+  "files": [
+    ".dist"
+  ],
+  "engines": {
+    "node": ">=14",
+    "npm": ">=6"
+  },
+  "scripts": {
+    "debug": "rimraf .dist/**/* && falkor-bundler --debug",
+    "release": "rimraf .dist/**/* && falkor-bundler --release"
+  },
+  "devDependencies": {
+    "@types/node": "15.12.5",
+    "@types/pretty-time": "1.1.0",
+    "rimraf": "3.0.2",
+    "@falkor/falkor-bundler": "file:../falkor-bundler"
+  },
+  "dependencies": {
+    "@types/shelljs": "0.8.8",
+    "@types/figlet": "1.5.1",
+    "@types/semver": "7.3.6",
+    "@types/node-fetch": "2.5.10",
+    "chalk": "4.1.1",
+    "strip-ansi": "7.0.0",
+    "ansi-escapes": "5.0.0",
+    "figlet": "1.5.0",
+    "semver": "7.3.5",
+    "pretty-time": "1.1.0",
+    "shelljs": "0.8.4",
+    "node-fetch": "2.6.1"
+  }
+}
