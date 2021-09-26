@@ -111,7 +111,9 @@ export default class ScriptHost {
             .pushPrompt(this.commandPrompt)
             .notice(
                 this.theme.formatCommand(command),
-                `(cwd: ${this.theme.formatPath(options?.cwd ? path.posix.join(this.cwd, options.cwd) : this.cwd)})`
+                `(cwd: ${this.theme.formatPath(
+                    options?.cwd ? path.posix.join(this.cwd, options.cwd.toString()) : this.cwd
+                )})`
             )
             .clearCurrentPrompt();
         const streamFn = this.terminal.startStream(LogLevel.DEBUG);
