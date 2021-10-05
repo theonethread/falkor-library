@@ -1,7 +1,7 @@
 {
   "name": "@falkor/falkor-library",
   "version": "0.3.0",
-  "description": "Shared Operations Library",
+  "description": "Shared operations library",
   "author": "Barnabas Bucsy (https://github.com/theonethread)",
   "license": "MIT",
   "private": true,
