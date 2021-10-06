@@ -3,6 +3,9 @@
   "version": "0.3.0",
   "description": "Shared operations library",
   "author": "Barnabas Bucsy (https://github.com/theonethread)",
+  "contributors": [
+    "Barnabas Bucsy (https://github.com/theonethread)"
+  ],
   "license": "MIT",
   "repository": "github:theonethread/falkor-library",
   "private": true,
