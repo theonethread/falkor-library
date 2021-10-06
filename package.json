@@ -28,7 +28,8 @@
   },
   "scripts": {
     "debug": "rimraf .dist/**/* && falkor-bundler --debug",
-    "release": "rimraf .dist/**/* && falkor-bundler --release"
+    "release": "rimraf .dist/**/* && falkor-bundler --release",
+    "prepublishOnly": "rimraf .dist/**/* && falkor-bundler --release"
   },
   "devDependencies": {
     "@types/node": "14.17.6",
