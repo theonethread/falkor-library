@@ -6,9 +6,10 @@
   "contributors": [
     "Barnabas Bucsy (https://github.com/theonethread)"
   ],
+  "funding": "https://boredom.cloud/hire-me.html",
   "license": "MIT",
-  "repository": "github:theonethread/falkor-library",
   "private": true,
+  "repository": "github:theonethread/falkor-library",
   "keywords": [
     "falkor",
     "operations",
@@ -33,7 +34,7 @@
     "@types/node": "14.17.6",
     "@types/pretty-time": "1.1.1",
     "rimraf": "3.0.2",
-    "@falkor/falkor-bundler": "1.0.0"
+    "@falkor/falkor-bundler": "file:../falkor-bundler"
   },
   "dependencies": {
     "@types/shelljs": "0.8.9",
