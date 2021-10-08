@@ -1,7 +1,7 @@
-# [Falkor] Operations Library
+# **Falkor Operations Library**
 
 ```javascript
-// Work IN Progress
+// Work In Progress
 ```
 
 ## **Development**
