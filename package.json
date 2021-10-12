@@ -29,7 +29,7 @@
   "scripts": {
     "debug": "rimraf .dist/**/* && falkor-bundler --debug",
     "release": "rimraf .dist/**/* && falkor-bundler --release",
-    "doc": "rimraf doc/**/* && typedoc --name \"Falkor Operations Library\" --hideGenerator --includeVersion  --disableSources --excludePrivate --entryPointStrategy expand --out .doc src",
+    "doc": "(mkdir .doc || echo Nothing to do.) && rimraf .doc/**/* && typedoc --name \"Falkor Operations Library\" --hideGenerator --includeVersion  --disableSources --excludePrivate --entryPointStrategy expand --out .doc src",
     "prepublishOnly": "npm run release && npm run doc"
   },
   "devDependencies": {
