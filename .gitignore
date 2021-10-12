@@ -1,6 +1,8 @@
 .DS_Store
 .localized
 
+doc
+
 .dist
 .man
 .types

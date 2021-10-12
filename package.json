@@ -28,12 +28,14 @@
   "scripts": {
     "debug": "rimraf .dist/**/* && falkor-bundler --debug",
     "release": "rimraf .dist/**/* && falkor-bundler --release",
-    "prepublishOnly": "npm run release"
+    "doc": "rimraf doc/**/* && typedoc --out doc --entryPointStrategy expand src",
+    "prepublishOnly": "npm run release && npm run doc"
   },
   "devDependencies": {
     "@types/node": "14.17.21",
     "@types/pretty-time": "1.1.1",
     "rimraf": "3.0.2",
+    "typedoc": "0.22.5",
     "@falkor/falkor-bundler": "1.1.1"
   },
   "dependencies": {
