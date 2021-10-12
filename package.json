@@ -19,7 +19,8 @@
   "module": ".dist/index.js",
   "typings": ".dist/index.d.ts",
   "files": [
-    ".dist"
+    ".dist",
+    ".doc"
   ],
   "engines": {
     "node": ">=14",
@@ -28,7 +29,7 @@
   "scripts": {
     "debug": "rimraf .dist/**/* && falkor-bundler --debug",
     "release": "rimraf .dist/**/* && falkor-bundler --release",
-    "doc": "rimraf doc/**/* && typedoc --name \"Falkor Operations Library\" --hideGenerator --includeVersion  --disableSources --excludePrivate --excludeProtected --entryPointStrategy expand --out doc src",
+    "doc": "rimraf doc/**/* && typedoc --name \"Falkor Operations Library\" --hideGenerator --includeVersion  --disableSources --excludePrivate --entryPointStrategy expand --out .doc src",
     "prepublishOnly": "npm run release && npm run doc"
   },
   "devDependencies": {
