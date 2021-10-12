@@ -1,4 +1,4 @@
-export default class Quote {
+export class Quote {
     protected readonly list = [
         "Genius doesn't work on an assembly line basis",
         "To boldly go where no man has gone before",

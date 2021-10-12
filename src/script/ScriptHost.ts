@@ -4,11 +4,11 @@ import { ChildProcess } from "child_process";
 import shell from "shelljs";
 import fetch, { RequestInit } from "node-fetch";
 
-import Config from "../config/Config.js";
-import Logger, { LogLevel } from "../cli/Logger.js";
-import Terminal from "../cli/Terminal.js";
-import Ascii from "../util/Ascii.js";
-import Theme from "../util/Theme.js";
+import { Config } from "../config/Config.js";
+import { Logger, LogLevel } from "../cli/Logger.js";
+import { Terminal } from "../cli/Terminal.js";
+import { Ascii } from "../util/Ascii.js";
+import { Theme } from "../util/Theme.js";
 
 export type TExecOptions = {
     noError?: RegExp[];
@@ -50,7 +50,7 @@ export type TSubShell = {
     grep: typeof shell.grep;
 };
 
-export default class ScriptHost {
+export class ScriptHost {
     protected readonly cwd = process.cwd();
     protected readonly defaultExecOptions = {
         silent: true,

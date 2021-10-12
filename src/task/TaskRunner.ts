@@ -3,12 +3,12 @@ import { RequestInit } from "node-fetch";
 
 import { TExecOptions, TExecReturnValue, TFetchReturnValue, TSubShell } from "../script/ScriptHost.js";
 import { AskOptions } from "../cli/Terminal.js";
-import TaskHost, { TaskHostErrorCodes } from "./TaskHost.js";
-import Task from "./Task.js";
-import Logger from "../cli/Logger.js";
-import FalkorError from "../error/FalkorError.js";
-import Ascii from "../util/Ascii.js";
-import Theme from "../util/Theme.js";
+import { TaskHost, TaskHostErrorCodes } from "./TaskHost.js";
+import { Task } from "./Task.js";
+import { Logger } from "../cli/Logger.js";
+import { FalkorError } from "../error/FalkorError.js";
+import { Ascii } from "../util/Ascii.js";
+import { Theme } from "../util/Theme.js";
 
 export type TaskOptions = {
     theme: Theme;
@@ -50,7 +50,7 @@ export const enum TaskRunnerErrorCodes {
     INVALID_ID = "runner-id-invalid"
 }
 
-export default class TaskRunner extends TaskHost {
+export class TaskRunner extends TaskHost {
     protected readonly prefix = this.theme.formatBrand("FALKOR:");
     protected readonly versionRe = /version\s*([^\s]+)/;
     protected readonly collection: { [id: string]: Task } = {};

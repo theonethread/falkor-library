@@ -1,8 +1,8 @@
 import { TBrandConfig } from "../config/Config.js";
-import Ascii from "./Ascii.js";
-import Quote from "./Quote.js";
+import { Ascii } from "./Ascii.js";
+import { Quote } from "./Quote.js";
 
-export default class Brand {
+export class Brand {
     protected readonly brandTitle: string;
     protected readonly quote = new Quote();
 

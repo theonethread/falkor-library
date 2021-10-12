@@ -1,4 +1,4 @@
-export default class FalkorError extends Error {
+export class FalkorError extends Error {
     public readonly code: string;
 
     constructor(code: string, message: string, type: string = "") {

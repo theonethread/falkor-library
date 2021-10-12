@@ -3,12 +3,12 @@ import stripAnsi from "strip-ansi";
 import shell from "shelljs";
 import ansiEscapes from "ansi-escapes";
 
-import TerminalAnimation from "./TerminalAnimation.js";
+import { TerminalAnimation } from "./TerminalAnimation.js";
 import { TTerminalConfig } from "../config/Config.js";
-import Logger, { LogLevel } from "./Logger.js";
-import Theme from "../util/Theme.js";
+import { Logger, LogLevel } from "./Logger.js";
+import { Theme } from "../util/Theme.js";
 
-export default class BaseTerminal {
+export class BaseTerminal {
     protected readonly ansi: boolean;
     protected readonly streamPrefix = "| ";
     protected readonly storedWrite = process.stdout.write;

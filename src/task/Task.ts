@@ -3,12 +3,12 @@ import { RequestInit } from "node-fetch";
 import { TaskOptions, TLazyCommandDependencies } from "./TaskRunner.js";
 import { TSubShell, TExecOptions, TExecReturnValue, TFetchReturnValue } from "../script/ScriptHost.js";
 import { AskOptions } from "../cli/Terminal.js";
-import Theme from "../util/Theme.js";
-import Logger from "../cli/Logger.js";
-import falkorUtil from "../util/Util.js";
-import Ascii from "../util/Ascii.js";
+import { Theme } from "../util/Theme.js";
+import { Logger } from "../cli/Logger.js";
+import { util as falkorUtil } from "../util/Util.js";
+import { Ascii } from "../util/Ascii.js";
 
-export default abstract class Task {
+export abstract class Task {
     public readonly recoverable = false;
 
     protected theme: Theme;

@@ -2,7 +2,7 @@ import path from "path";
 import shell from "shelljs";
 import figlet from "figlet";
 
-import falkorUtil from "../util/Util.js";
+import { util as falkorUtil } from "../util/Util.js";
 import { LogLevel } from "../cli/Logger.js";
 
 export type TTerminalConfig = {
@@ -53,7 +53,7 @@ export type TConfig = {
     brand?: TBrandConfig;
 };
 
-export default class Config {
+export class Config {
     protected readonly config: TConfig = {
         terminal: {
             ansi: true,

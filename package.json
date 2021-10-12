@@ -28,7 +28,7 @@
   "scripts": {
     "debug": "rimraf .dist/**/* && falkor-bundler --debug",
     "release": "rimraf .dist/**/* && falkor-bundler --release",
-    "doc": "rimraf doc/**/* && typedoc --out doc --entryPointStrategy expand src",
+    "doc": "rimraf doc/**/* && typedoc --name \"Falkor Operations Library\" --hideGenerator --includeVersion  --disableSources --excludePrivate --excludeProtected --entryPointStrategy expand --out doc src",
     "prepublishOnly": "npm run release && npm run doc"
   },
   "devDependencies": {
