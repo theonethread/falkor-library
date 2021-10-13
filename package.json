@@ -19,8 +19,7 @@
   "module": ".dist/index.js",
   "typings": ".dist/index.d.ts",
   "files": [
-    ".dist",
-    ".doc"
+    ".dist"
   ],
   "engines": {
     "node": ">=14",
@@ -30,13 +29,14 @@
     "debug": "rimraf .dist/**/* && falkor-bundler --debug",
     "release": "rimraf .dist/**/* && falkor-bundler --release",
     "doc": "(mkdir .doc || echo Nothing to do.) && rimraf .doc/**/* && typedoc --name \"Falkor Operations Library\" --hideGenerator --includeVersion  --disableSources --excludePrivate --entryPointStrategy expand --out .doc src",
-    "prepublishOnly": "npm run release && npm run doc"
+    "prepublishOnly": "npm run release"
   },
   "devDependencies": {
     "@types/node": "14.17.21",
     "@types/pretty-time": "1.1.1",
     "rimraf": "3.0.2",
     "typedoc": "0.22.5",
+    "typedoc-plugin-rename-defaults": "0.4.0",
     "@falkor/falkor-bundler": "1.1.1"
   },
   "dependencies": {
