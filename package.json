@@ -28,7 +28,7 @@
   "scripts": {
     "debug": "rimraf .dist/**/* && falkor-bundler --debug",
     "release": "rimraf .dist/**/* && falkor-bundler --release",
-    "doc": "(mkdir .doc || echo Nothing to do.) && rimraf .doc/**/* && typedoc --name \"Falkor Operations Library\" --hideGenerator --includeVersion  --disableSources --excludePrivate --entryPointStrategy expand --out .doc src",
+    "doc": "(mkdir .doc || echo Nothing to do.) && rimraf .doc/**/* && typedoc --hideGenerator --includeVersion  --disableSources --excludePrivate --excludeExternals --name \"Falkor Operations Library\" --internalNamespace @falkor --out .doc src/index.ts",
     "prepublishOnly": "npm run release"
   },
   "devDependencies": {
@@ -37,6 +37,7 @@
     "rimraf": "3.0.2",
     "typedoc": "0.22.5",
     "typedoc-plugin-rename-defaults": "0.4.0",
+    "typedoc-plugin-missing-exports": "0.22.3",
     "@falkor/falkor-bundler": "1.1.1"
   },
   "dependencies": {
