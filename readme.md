@@ -6,6 +6,12 @@
 
 The `falkor-library` project is a collection of DevOps tools written in strict ES6 TypeScript to be used with the **Falkor Framework**.
 
+## **Usage**
+
+```typescript
+import falkor from "@falkor/falkor-library";
+```
+
 ## **Further Development**
 
 The project uses the [`@falkor/falkor-bundler`](https://www.npmjs.com/package/@falkor/falkor-bundler "Visit") module to compile sources. You can run:
@@ -15,6 +21,14 @@ $ npm run [ debug | release ]
 ```
 
 > _**SEE**: `"scripts"` entry in [`package.json`](https://github.com/theonethread/falkor-library/blob/master/package.json "Open")_
+
+### **Documentation**
+
+To generate HTML documentation from the TypeScript sources under the ignored `.doc` directory using [Typedoc](https://typedoc.org "Visit") run:
+
+```
+$ npm run doc
+```
 
 ### **Version History**
 
