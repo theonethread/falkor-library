@@ -1,4 +1,4 @@
-import path from "path";
+import { posix as path } from "path";
 import { fileURLToPath } from "url";
 import { ChildProcess } from "child_process";
 import shell from "shelljs";
@@ -51,7 +51,7 @@ export type TSubShell = {
 };
 
 export default class ScriptHost {
-    protected readonly cwd = process.cwd();
+    protected readonly cwd = process.cwd().replace(/\\/g, "/");
     protected readonly defaultExecOptions = {
         silent: true,
         async: true
@@ -111,9 +111,7 @@ export default class ScriptHost {
             .pushPrompt(this.commandPrompt)
             .notice(
                 this.theme.formatCommand(command),
-                `(cwd: ${this.theme.formatPath(
-                    options?.cwd ? path.posix.join(this.cwd, options.cwd.toString()) : this.cwd
-                )})`
+                `(cwd: ${this.theme.formatPath(options?.cwd ? path.join(this.cwd, options.cwd.toString()) : this.cwd)})`
             )
             .clearCurrentPrompt();
         const streamFn = this.terminal.startStream(LogLevel.DEBUG);
@@ -246,7 +244,7 @@ export default class ScriptHost {
 
     protected getModuleParameters(fileUrl: string, ...correctionSegments: string[]): TModuleParameters {
         return {
-            root: path.posix.join(path.posix.dirname(fileURLToPath(fileUrl)), ...correctionSegments),
+            root: path.join(path.dirname(fileURLToPath(fileUrl)), ...correctionSegments),
             params: Object.fromEntries(new URL(fileUrl).searchParams)
         };
     }

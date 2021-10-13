@@ -1,4 +1,4 @@
-import path from "path";
+import { posix as path } from "path";
 import shell from "shelljs";
 import figlet from "figlet";
 
@@ -162,7 +162,7 @@ export default class Config {
 
     protected assignTheme(target: TConfig, source: TConfig): void {
         if (typeof source.theme === "string") {
-            this.themeFile = path.posix.join(process.cwd(), source.theme);
+            this.themeFile = path.join(process.cwd(), source.theme);
             const externalTheme = JSON.parse(shell.cat(source.theme));
             if (externalTheme === null) {
                 target.theme = null;
