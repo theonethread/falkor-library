@@ -1,14 +1,14 @@
 import ansiEscapes from "ansi-escapes";
 
-import { FalkorError } from "../error/FalkorError.js";
-import { Theme } from "../util/Theme.js";
+import FalkorError from "../error/FalkorError.js";
+import Theme from "../util/Theme.js";
 
 export const enum TerminalAnimationErrorCodes {
     FRAME_COUNT = "terminal-animation-frame-count",
     INVALID_FRAME = "terminal-animation-invalid-frame"
 }
 
-export class TerminalAnimation {
+export default class TerminalAnimation {
     protected readonly empty: string;
     protected readonly endFrame: number;
     protected readonly printLength: number;

@@ -2,8 +2,8 @@ import shell from "shelljs";
 import stripAnsi from "strip-ansi";
 
 import { TLoggerConfig } from "../config/Config.js";
-import { FalkorError } from "../error/FalkorError.js";
-import { Theme } from "../util/Theme.js";
+import FalkorError from "../error/FalkorError.js";
+import Theme from "../util/Theme.js";
 
 export const enum LoggerErrorCodes {
     LOG_MIDSTREAM = "logger-log-midstream",
@@ -19,7 +19,7 @@ export const enum LogLevel {
     FATAL
 }
 
-export class Logger {
+export default class Logger {
     protected readonly txtSeverity = ["DBG", "NTC", "INF", "WRN", "ERR", "FAT"];
     protected readonly promptJoiner = " ";
     protected readonly joiner = " ";

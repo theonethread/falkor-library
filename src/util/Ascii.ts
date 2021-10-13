@@ -1,6 +1,6 @@
 import figlet from "figlet";
 
-import { Theme } from "./Theme.js";
+import Theme from "./Theme.js";
 
 export const enum ListType {
     PURE,
@@ -9,7 +9,7 @@ export const enum ListType {
     MULTI_NUMERIC
 }
 
-export class Ascii {
+export default class Ascii {
     public readonly bulletIndicator = "*";
     public readonly uncheckedSelectionIndicator = "[ ]";
     public readonly checkedSelectionIndicator = "[x]";

@@ -1,8 +1,8 @@
 import prettify from "pretty-time";
 
-import { ScriptHost } from "../script/ScriptHost.js";
-import { FalkorError } from "../error/FalkorError.js";
-import { Brand } from "../util/Brand.js";
+import ScriptHost from "../script/ScriptHost.js";
+import FalkorError from "../error/FalkorError.js";
+import Brand from "../util/Brand.js";
 import { LogLevel } from "../cli/Logger.js";
 
 export const enum TaskHostErrorCodes {
@@ -10,7 +10,7 @@ export const enum TaskHostErrorCodes {
     SUBTASK_ERROR = "host-subtask-error"
 }
 
-export class TaskHost extends ScriptHost {
+export default class TaskHost extends ScriptHost {
     protected readonly copyrightPrompt = "[C]";
     protected readonly debugPrompt = "[;]";
     protected readonly taskPrompt = "[#]";

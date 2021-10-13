@@ -2,11 +2,11 @@ import { Key } from "readline";
 import shell from "shelljs";
 import ansiEscapes from "ansi-escapes";
 
-import { BaseTerminal } from "./BaseTerminal.js";
+import BaseTerminal from "./BaseTerminal.js";
 import { TTerminalConfig } from "../config/Config.js";
-import { Logger } from "./Logger.js";
-import { Theme } from "../util/Theme.js";
-import { Ascii, ListType } from "../util/Ascii.js";
+import Logger from "./Logger.js";
+import Theme from "../util/Theme.js";
+import Ascii, { ListType } from "../util/Ascii.js";
 
 const enum InteractiveMoveDirection {
     PREVIOUS,
@@ -21,7 +21,7 @@ export type AskOptions = {
     multi?: boolean;
 };
 
-export class Terminal extends BaseTerminal {
+export default class Terminal extends BaseTerminal {
     protected readonly maxFailure = 5;
     protected readonly numberRe = /^\d+$/;
     protected readonly multipleNumberRe = /^\d+(\s*,\s*\d+)*$/;

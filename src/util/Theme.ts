@@ -27,7 +27,7 @@ export const enum ThemeFormatKey {
     FAILURE = "failure"
 }
 
-export class Theme {
+export default class Theme {
     protected readonly severityAssociations = ["debug", "notice", "info", "warning", "error", "fatal"];
     protected readonly severityErrorAssociations = [
         "debug-error",

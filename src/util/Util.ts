@@ -1,4 +1,4 @@
-export class FalkorUtil {
+class Util {
     public deepFreeze(object: any): void {
         for (const name of Object.getOwnPropertyNames(object)) {
             const value = object[name];
@@ -10,4 +10,4 @@ export class FalkorUtil {
     }
 }
 
-export const util: FalkorUtil = new FalkorUtil();
+export default new Util();
