@@ -137,6 +137,9 @@ $ npm run doc
 
 * `development`
     * [GitHub](https://github.com/theonethread/falkor-library "Visit")
+* `1.0.0-beta.1`
+    * [npmjs](https://www.npmjs.com/package/@falkor/falkor-library/v/1.0.0-beta.1 "Visit")
+    * [GitHub](https://github.com/theonethread/falkor-library/releases/tag/v1.0.0-beta.1 "Visit")
 * `1.0.0-beta.0`
     * [npmjs](https://www.npmjs.com/package/@falkor/falkor-library/v/1.0.0-beta.0 "Visit")
     * [GitHub](https://github.com/theonethread/falkor-library/releases/tag/v1.0.0-beta.0 "Visit")
