@@ -69,9 +69,11 @@ export default class TaskHost extends ScriptHost {
                     `(${text} ${this.theme.formatTrace(`in ${prettify(process.hrtime(this.times.pop()))}`)})`
                 )}`
             )
-            .popPrompt()
-            .debug(`${this.debugPrompt} throwing '${this.theme.formatWarning(TaskHostErrorCodes.SUBTASK_ABORT)}'`);
+            .popPrompt();
         if (!final) {
+            this.logger.debug(
+                `${this.debugPrompt} throwing '${this.theme.formatWarning(TaskHostErrorCodes.SUBTASK_ABORT)}'`
+            );
             throw new FalkorError(TaskHostErrorCodes.SUBTASK_ABORT, "TaskHost: subtask abort");
         }
     }
@@ -88,9 +90,11 @@ export default class TaskHost extends ScriptHost {
                     `(${text} ${this.theme.formatTrace(`in ${prettify(process.hrtime(this.times.pop()))}`)})`
                 )}`
             )
-            .popPrompt()
-            .debug(`${this.debugPrompt} throwing '${this.theme.formatFatal(TaskHostErrorCodes.SUBTASK_ERROR)}'`);
+            .popPrompt();
         if (!final) {
+            this.logger.debug(
+                `${this.debugPrompt} throwing '${this.theme.formatFatal(TaskHostErrorCodes.SUBTASK_ERROR)}'`
+            );
             throw new FalkorError(TaskHostErrorCodes.SUBTASK_ERROR, "TaskHost: subtask error");
         }
     }
