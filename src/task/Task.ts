@@ -9,8 +9,6 @@ import falkorUtil from "../util/Util.js";
 import Ascii from "../util/Ascii.js";
 
 export default abstract class Task {
-    public readonly recoverable = false;
-
     protected theme: Theme;
     protected logger: Logger;
     protected ascii: Ascii;
@@ -25,6 +23,10 @@ export default abstract class Task {
     protected abort: (text: string) => void;
     /** @throws !always FalkorError: TaskHostErrorCodes.SUBTASK_ERROR */
     protected error: (text: string) => void;
+
+    public get [Symbol.toStringTag](): string {
+        return "@FalkorTask";
+    }
 
     public get dependencies(): TLazyCommandDependencies {
         return this.deps;
@@ -56,4 +58,6 @@ export default abstract class Task {
     }
 
     public abstract run(): Promise<void>;
+
+    public recover?(): Promise<void>;
 }
