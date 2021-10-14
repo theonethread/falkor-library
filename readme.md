@@ -133,6 +133,11 @@ To generate HTML documentation from the TypeScript sources under the ignored `.d
 $ npm run doc
 ```
 
+### **TODO**
+
+* Extend error handling with signals:
+    * Run recovery on `SIGINT`
+
 ### **Version History**
 
 * `development`
