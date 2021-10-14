@@ -214,7 +214,7 @@ export default class Terminal extends BaseTerminal {
     }
 
     protected endGetResponse(answer: string, password: boolean = false, timedOut: boolean = false): string {
-        clearTimeout(this.responseTimeout as NodeJS.Timeout);
+        clearTimeout(this.responseTimeout);
         this.responseTimeout = null;
         if (timedOut) {
             this.timedOutResponse = true;
