@@ -1,7 +1,6 @@
 # **Falkor Operations Library**
 
-[![Npm Keywords](https://img.shields.io/github/package-json/keywords/theonethread/falkor-library "Keywords")](https://www.npmjs.com/package/@falkor/falkor-library "Visit") &nbsp;
-[![Npm Package](https://img.shields.io/npm/v/@falkor/falkor-library "Npm")](https://www.npmjs.com/package/@falkor/falkor-library "Visit") &nbsp;
+[![Npm Keywords](https://img.shields.io/github/package-json/keywords/theonethread/falkor-library "Keywords") ![Npm Package](https://img.shields.io/npm/v/@falkor/falkor-library "Npm")](https://www.npmjs.com/package/@falkor/falkor-library "Visit") &nbsp;
 [![Node Version](https://img.shields.io/node/v/@falkor/falkor-library "Node")](https://nodejs.org/ "Visit") &nbsp;
 [![Falkor Bundler](https://img.shields.io/npm/dependency-version/@falkor/falkor-library/dev/@falkor/falkor-bundler "Falkor Bundler")](https://www.npmjs.com/package/@falkor/falkor-bundler "Visit") &nbsp;
 [![Type Definitions](https://img.shields.io/npm/types/@falkor/falkor-library "Typings")](https://www.typescriptlang.org/ "Visit")
