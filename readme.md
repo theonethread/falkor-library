@@ -1,6 +1,6 @@
 # **Falkor Operations Library**
 
-[![Vulnerabilities](https://snyk.io/test/github/theonethread/falkor-library/badge.svg)](https://snyk.io/test/github/theonethread/falkor-library)
+[![Vulnerabilities](https://snyk.io/test/github/theonethread/falkor-library/badge.svg "snyk")](https://snyk.io/test/github/theonethread/falkor-library "Visit")
 
 ```javascript
 // Work In Progress
