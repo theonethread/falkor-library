@@ -12,7 +12,7 @@ export default class BaseTerminal {
     protected readonly ansi: boolean;
     protected readonly streamPrefix = "| ";
     protected readonly storedWrite = process.stdout.write;
-    protected readonly streamResizeListener: () => void;
+    protected readonly streamResizeListener = () => this.internalStreamResizeListener();
     protected interface = readline.createInterface({
         input: process.stdin,
         output: process.stdout,
@@ -28,7 +28,6 @@ export default class BaseTerminal {
 
     constructor(config: TTerminalConfig, protected logger: Logger, protected theme: Theme) {
         this.ansi = process.stdout.isTTY && config.ansi;
-        this.streamResizeListener = () => this.internalStreamResizeListener();
         if (this.ansi && config.animation) {
             const ansiLog = (str: string) => this.logger.logAnsi(str);
             if (typeof config.animation === "boolean") {

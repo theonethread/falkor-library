@@ -1,5 +1,7 @@
 # **Falkor Operations Library**
 
+![Vulnerabilities](https://snyk.io/test/github/theonethread/falkor-library/badge.svg)
+
 ```javascript
 // Work In Progress
 ```

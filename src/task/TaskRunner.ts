@@ -68,7 +68,7 @@ export default class TaskRunner extends TaskHost {
         abort: (text: string) => this.endSubtaskAbort(text),
         error: (text: string) => this.endSubtaskError(text)
     };
-    protected readonly sigintHandler = () => this.endSubtaskAbort("received 'SIGINT'");
+    protected readonly sigintListener = () => this.endSubtaskAbort("received 'SIGINT'");
     protected currentTask: Task;
 
     constructor(appName?: string) {
@@ -180,9 +180,9 @@ export default class TaskRunner extends TaskHost {
         for (const id of idArr) {
             this.currentTask = this.collection[id];
             this.startSubtask(this.currentTask.id);
-            process.once("SIGINT", this.sigintHandler);
+            process.once("SIGINT", this.sigintListener);
             await this.currentTask.run();
-            process.removeListener("SIGINT", this.sigintHandler);
+            process.removeListener("SIGINT", this.sigintListener);
             this.endSubtaskSuccess("finished task");
         }
         this.endSubtaskSuccess("done");
