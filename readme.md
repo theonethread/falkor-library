@@ -144,7 +144,11 @@ $ npm run doc
 ### **TODO**
 
 * Extend error handling with signals:
-    * Run recovery on `SIGINT`
+    * Recognize need of recovery on `SIGINT`
+* Run failure log based recovery at startup, rather than secure graceful shutdown on error / signal
+    * Fewer plugins to load in `recovery` mode, if explicitly requested
+    * Can be automated as part of cleanup (safe part of next run)
+        * Ask: `Would you like to recover previous failed task(s)?`
 
 ### **Version History**
 
