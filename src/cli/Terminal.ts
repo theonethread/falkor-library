@@ -30,6 +30,7 @@ export default class Terminal extends BaseTerminal {
     protected readonly listResizeListener: () => void;
     protected readonly questionPrompt: string;
     protected readonly passwordPrompt: string;
+    protected asking: boolean = false;
     protected answerCount: number;
     protected selectionType: ListType;
     protected selection: number = null;
@@ -38,6 +39,7 @@ export default class Terminal extends BaseTerminal {
     protected nonMultiSelectionList: string[];
     protected selectionAnswers: string[];
     protected responseTimeout: NodeJS.Timeout;
+    protected responseAbort: () => void;
     protected timedOutResponse: boolean;
 
     constructor(config: TTerminalConfig, protected logger: Logger, protected theme: Theme, protected ascii: Ascii) {
@@ -46,11 +48,25 @@ export default class Terminal extends BaseTerminal {
         this.listResizeListener = () => this.internalListResizeListener();
         this.questionPrompt = this.theme.formatQuestion("[?]");
         this.passwordPrompt = this.theme.formatQuestion("[*]");
+        this.interface.on("SIGINT", () => {
+            if (this.streaming) {
+                this.endStream();
+                this.logger.error(`aborted stream (SIGINT)`).popPrompt();
+                this.streaming = false;
+            } else if (this.asking) {
+                this.responseAbort();
+                this.hideCursor();
+                this.logger.error(`aborted input (SIGINT)`).popPrompt();
+                this.asking = false;
+            }
+            process.emit("SIGINT", "SIGINT");
+        });
         this.interface.setPrompt(this.theme.formatQuestion("> "));
         this.hideCursor();
     }
 
     public async ask(text: string, options?: AskOptions): Promise<string | string[]> {
+        this.asking = true;
         this.answerCount = 0;
         this.timedOutResponse = false;
         this.logger
@@ -86,6 +102,7 @@ export default class Terminal extends BaseTerminal {
                 )
                 .popPrompt();
         }
+        this.asking = false;
         return response;
     }
 
@@ -208,6 +225,7 @@ export default class Terminal extends BaseTerminal {
         }
         const input = await new Promise<string>((resolve) => {
             this.responseTimeout = setTimeout(() => resolve(this.endGetResponse(null, password, true)), 60000);
+            this.responseAbort = () => resolve(this.endGetResponse(null, password, true));
             this.interface.once("line", (answer: string) => resolve(this.endGetResponse(answer, password)));
         });
         return input;
@@ -216,6 +234,7 @@ export default class Terminal extends BaseTerminal {
     protected endGetResponse(answer: string, password: boolean = false, timedOut: boolean = false): string {
         clearTimeout(this.responseTimeout);
         this.responseTimeout = null;
+        this.responseAbort = null;
         if (timedOut) {
             this.timedOutResponse = true;
         }

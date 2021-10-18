@@ -20,6 +20,8 @@ export default class BaseTerminal {
         tabSize: 2
     });
     protected cursorShown: boolean = true;
+    protected muted: boolean = false;
+    protected streaming: boolean = false;
     protected streamLevel: number = null;
     protected streamPad: number = null;
     protected streamBuffer: string = null;
@@ -62,11 +64,17 @@ export default class BaseTerminal {
     //#region MUTE
 
     public mute(): void {
-        process.stdout.write = (): boolean => true;
+        if (!this.muted) {
+            process.stdout.write = (): boolean => true;
+            this.muted = true;
+        }
     }
 
     public unmute(): void {
-        process.stdout.write = this.storedWrite;
+        if (this.muted) {
+            process.stdout.write = this.storedWrite;
+            this.muted = false;
+        }
     }
 
     //#endregion
@@ -74,6 +82,7 @@ export default class BaseTerminal {
     //#region STREAM
 
     public startStream(level: LogLevel): (chunk: string, isError?: boolean) => void {
+        this.streaming = true;
         this.streamLevel = level;
         this.streamBuffer = "";
         const prefix = this.logger.log(level, [this.streamPrefix], true);
@@ -84,9 +93,7 @@ export default class BaseTerminal {
                 this.streamBuffer += isError ? this.theme.formatSeverityError(level, chunk) : chunk;
             };
         } else if (this.streamPad === null) {
-            if (this.terminalAnimation) {
-                this.terminalAnimation.start();
-            }
+            this.terminalAnimation?.start();
             return (chunk: string, isError?: boolean) => {
                 this.streamBuffer += isError ? this.theme.formatSeverityError(level, chunk) : chunk;
             };
@@ -146,6 +153,7 @@ export default class BaseTerminal {
         this.streamBuffer = null;
         this.lineBuffer = null;
         this.streamPad = null;
+        this.streaming = false;
         return ret;
     }
 
