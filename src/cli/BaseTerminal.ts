@@ -45,6 +45,14 @@ export default class BaseTerminal {
 
     //#region CURSOR
 
+    public abort(): void {
+        if (this.streaming) {
+            this.endStream();
+            this.logger.error(`aborted stream (SIGINT)`).popPrompt();
+            this.streaming = false;
+        }
+    }
+
     public hideCursor(): void {
         if (this.ansi && this.cursorShown) {
             this.logger.logAnsi(ansiEscapes.cursorHide);

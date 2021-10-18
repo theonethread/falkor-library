@@ -49,20 +49,21 @@ export default class Terminal extends BaseTerminal {
         this.questionPrompt = this.theme.formatQuestion("[?]");
         this.passwordPrompt = this.theme.formatQuestion("[*]");
         this.interface.on("SIGINT", () => {
-            if (this.streaming) {
-                this.endStream();
-                this.logger.error(`aborted stream (SIGINT)`).popPrompt();
-                this.streaming = false;
-            } else if (this.asking) {
-                this.responseAbort();
-                this.hideCursor();
-                this.logger.error(`aborted input (SIGINT)`).popPrompt();
-                this.asking = false;
-            }
+            this.abort();
             process.emit("SIGINT", "SIGINT");
         });
         this.interface.setPrompt(this.theme.formatQuestion("> "));
         this.hideCursor();
+    }
+
+    public abort(): void {
+        super.abort();
+        if (this.asking) {
+            this.responseAbort();
+            this.hideCursor();
+            this.logger.error(`aborted input (SIGINT)`).popPrompt();
+            this.asking = false;
+        }
     }
 
     public async ask(text: string, options?: AskOptions): Promise<string | string[]> {

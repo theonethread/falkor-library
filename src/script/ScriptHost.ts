@@ -208,7 +208,7 @@ export default class ScriptHost {
             status: res.status,
             body: decoded
         };
-        this.logger.debug(`body: ${JSON.stringify(decoded, null, 2)}`);
+        this.logger.debug(`body: ${typeof decoded === "string" ? decoded : JSON.stringify(decoded, null, 2)}`);
         if (res.ok) {
             this.logger.notice(`${this.theme.formatSuccess("succeeded")} (status: ${res.status} - ${res.statusText})`);
         } else {

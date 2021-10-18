@@ -68,7 +68,10 @@ export default class TaskRunner extends TaskHost {
         abort: (text: string) => this.endSubtaskAbort(text),
         error: (text: string) => this.endSubtaskError(text)
     };
-    protected readonly sigintListener = () => this.endSubtaskAbort("received 'SIGINT'");
+    // NOTE: throwing from the listener will not be caught by async try-catch
+    protected readonly sigintListener = () => this.handleError(this.endSubtaskAbort("received 'SIGINT'", false, true));
+    protected currentSequence: string[];
+    protected currentIndex: number = null;
     protected currentTask: Task;
 
     constructor(appName?: string) {
@@ -90,19 +93,20 @@ export default class TaskRunner extends TaskHost {
         if (!idArr) {
             idArr = Object.keys(this.collection);
         }
+        this.currentSequence = idArr;
         try {
-            this.mergeDependencies(dependencies, idArr);
+            this.mergeDependencies(dependencies);
             await this.checkDependencies(dependencies);
-            await this.runSequence(idArr);
+            await this.runSequence();
         } catch (error) {
             await this.handleError(error);
         }
     }
 
     /** @throws FalkorError: TaskRunnerErrorCodes.INVALID_ID */
-    protected mergeDependencies(target: TCommandDependencies<semver.SemVer>, idArr: string[]): void {
+    protected mergeDependencies(target: TCommandDependencies<semver.SemVer>): void {
         this.startSubtask(`${this.prefix} Dependency Merge`);
-        idArr.forEach((id: string) => {
+        this.currentSequence.forEach((id: string) => {
             const task = this.collection[id];
             if (!task) {
                 throw new FalkorError(TaskRunnerErrorCodes.INVALID_ID, `TaskRunner: invalid task id '${id}'`);
@@ -175,9 +179,11 @@ export default class TaskRunner extends TaskHost {
         }
     }
 
-    protected async runSequence(idArr: string[]): Promise<void> {
+    protected async runSequence(): Promise<void> {
         this.startSubtask(`${this.prefix} Sequencer`);
-        for (const id of idArr) {
+        this.currentIndex = -1;
+        for (const id of this.currentSequence) {
+            this.currentIndex++;
             this.currentTask = this.collection[id];
             this.startSubtask(this.currentTask.id);
             process.once("SIGINT", this.sigintListener);
@@ -185,6 +191,7 @@ export default class TaskRunner extends TaskHost {
             process.removeListener("SIGINT", this.sigintListener);
             this.endSubtaskSuccess("finished task");
         }
+        this.currentIndex = null;
         this.endSubtaskSuccess("done");
     }
 

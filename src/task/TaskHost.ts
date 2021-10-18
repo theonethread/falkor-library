@@ -57,7 +57,7 @@ export default class TaskHost extends ScriptHost {
     }
 
     /** @throws FalkorError: TaskHostErrorCodes.SUBTASK_ABORT */
-    protected endSubtaskAbort(text: string, final: boolean = false): void {
+    protected endSubtaskAbort(text: string, final: boolean = false, soft: boolean = false): FalkorError {
         if (final) {
             this.subtaskTitles.length = 1;
             this.times.length = 1;
@@ -70,16 +70,21 @@ export default class TaskHost extends ScriptHost {
                 )}`
             )
             .popPrompt();
+        const e = new FalkorError(TaskHostErrorCodes.SUBTASK_ABORT, "TaskHost: subtask abort");
+        if (soft) {
+            return e;
+        }
         if (!final) {
             this.logger.debug(
                 `${this.debugPrompt} throwing '${this.theme.formatWarning(TaskHostErrorCodes.SUBTASK_ABORT)}'`
             );
-            throw new FalkorError(TaskHostErrorCodes.SUBTASK_ABORT, "TaskHost: subtask abort");
+            throw e;
         }
+        return null;
     }
 
     /** @throws FalkorError: TaskHostErrorCodes.SUBTASK_ERROR */
-    protected endSubtaskError(text: string, final: boolean = false): void {
+    protected endSubtaskError(text: string, final: boolean = false, soft: boolean = false): FalkorError {
         if (final) {
             this.subtaskTitles.length = 1;
             this.times.length = 1;
@@ -91,11 +96,16 @@ export default class TaskHost extends ScriptHost {
                 )}`
             )
             .popPrompt();
+        const e = new FalkorError(TaskHostErrorCodes.SUBTASK_ERROR, "TaskHost: subtask error");
+        if (soft) {
+            return e;
+        }
         if (!final) {
             this.logger.debug(
                 `${this.debugPrompt} throwing '${this.theme.formatFatal(TaskHostErrorCodes.SUBTASK_ERROR)}'`
             );
-            throw new FalkorError(TaskHostErrorCodes.SUBTASK_ERROR, "TaskHost: subtask error");
+            throw e;
         }
+        return null;
     }
 }
