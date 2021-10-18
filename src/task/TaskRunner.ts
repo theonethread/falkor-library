@@ -216,6 +216,7 @@ export default class TaskRunner extends TaskHost {
         this.startSubtask(`${this.prefix} Recovery`);
         try {
             // TODO
+            await new Promise((resolve) => setTimeout(resolve, 15000));
         } catch (error) {
             this.endSubtaskError("recovery failed");
             return;
