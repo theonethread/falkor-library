@@ -72,7 +72,7 @@ export default class TaskRunner extends TaskHost {
     protected readonly sigintListener = () => this.handleError(this.endSubtaskAbort("received 'SIGINT'", false, true));
     protected currentSequence: string[];
     protected currentIndex: number = null;
-    protected currentTask: Task;
+    protected currentTask: Task = null;
 
     constructor(appName?: string) {
         super(appName);
@@ -192,36 +192,25 @@ export default class TaskRunner extends TaskHost {
             this.endSubtaskSuccess("finished task");
         }
         this.currentIndex = null;
+        this.currentTask = null;
+        this.currentSequence = null;
         this.endSubtaskSuccess("done");
     }
 
-    protected async handleError(error: Error): Promise<void> {
+    protected handleError(error: Error): void {
         this.logger.emptyPrompt(1);
-        let isAbort = error instanceof FalkorError && error.code === TaskHostErrorCodes.SUBTASK_ABORT;
+        const isAbort = error instanceof FalkorError && error.code === TaskHostErrorCodes.SUBTASK_ABORT;
+        if (this.currentTask.cancel) {
+            this.currentTask.cancel(isAbort);
+        }
         if (isAbort) {
             this.logAbort();
-        } else {
-            this.logError(error);
-        }
-        await this.runRecovery(error);
-        if (isAbort) {
             this.endSubtaskAbort("sequence aborted", true);
         } else {
+            this.logError(error);
             this.endSubtaskError("sequence failed", true);
         }
         process.exit(1);
-    }
-
-    protected async runRecovery(_: Error): Promise<void> {
-        this.startSubtask(`${this.prefix} Recovery`);
-        try {
-            // TODO
-            await new Promise((resolve) => setTimeout(resolve, 15000));
-        } catch (error) {
-            this.endSubtaskError("recovery failed");
-            return;
-        }
-        this.endSubtaskSuccess("recovered");
     }
 
     protected logAbort(): void {

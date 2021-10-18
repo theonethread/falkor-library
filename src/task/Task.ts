@@ -59,5 +59,5 @@ export default abstract class Task {
 
     public abstract run(): Promise<void>;
 
-    public recover?(): Promise<void>;
+    public cancel?(isAbort: boolean): void;
 }
