@@ -42,7 +42,7 @@ jobs:
       - name: Update Remote Documentation
         run: |-
           rm -rf ./falkor-library-doc/**/*
-          cp -R ./falkor-library/**/* ./falkor-library-doc
+          cp -R ./falkor-library/.doc/**/* ./falkor-library-doc
 
       - name: Push Remote Documentation
         run: |-
