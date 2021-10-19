@@ -143,7 +143,7 @@ To generate HTML documentation from the TypeScript sources under the ignored `.d
 $ npm run doc
 ```
 
-Or you can visit the exported [online documentation](https://theonethread.github.io/falkor-library-doc/index.html "Visit").
+Or you can visit the exported [online documentation](https://theonethread.github.io/falkor-library-doc "Visit").
 
 ### **TODO**
 
