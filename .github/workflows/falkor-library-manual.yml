@@ -1,0 +1,44 @@
+# https://rhysd.github.io/actionlint/
+
+name: Falkor CI - Manual
+
+on:
+  workflow_dispatch:
+    inputs:
+      cli:
+        description: Custom CLI arguments for build
+        required: false
+        default: --release
+
+jobs:
+  CIm:
+    name: Manual CI Suite
+
+    strategy:
+      matrix:
+        node-version: [14.x, 16.x]
+        os: [ubuntu-latest, windows-latest, macOS-latest]
+
+    runs-on: ${{ matrix.os }}
+
+    steps:
+      - name: GitHub Checkout
+        uses: actions/checkout@v2
+
+      - name: Use Node.js v${{ matrix.node-version }}
+        uses: actions/setup-node@v2
+        with:
+          node-version: ${{ matrix.node-version }}
+          cache: npm
+
+      - name: Install Npm Dependencies
+        run: |-
+          npm ci --ignore-scripts
+
+      - name: Bundle Custom Project
+        run: |-
+          npx falkor-bundler ${{ github.event.inputs.cli }} --input src/index.ts
+
+      - name: Build Documentation
+        run: |-
+          npm run doc
