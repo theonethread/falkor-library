@@ -6,7 +6,7 @@
 [![CI](https://img.shields.io/github/workflow/status/theonethread/falkor-library/Falkor%20CI%20-%20Manual "CI")](https://github.com/theonethread/falkor-library/actions "Visit") &nbsp;
 [![Activity](https://img.shields.io/github/last-commit/theonethread/falkor-library "Activity")](https://github.com/theonethread/falkor-library "Visit") &nbsp;
 [![Falkor Bundler](https://img.shields.io/npm/dependency-version/@falkor/falkor-library/dev/@falkor/falkor-bundler "Falkor Bundler")](https://www.npmjs.com/package/@falkor/falkor-bundler "Visit") &nbsp;
-[![Type Definitions](https://img.shields.io/npm/types/@falkor/falkor-library "Typings")](https://www.typescriptlang.org/ "Visit")
+[![Type Definitions](https://img.shields.io/npm/types/@falkor/falkor-library "Typings")](https://www.typescriptlang.org/ "Visit") &nbsp;
 [![Snyk Vulnerabilities](https://img.shields.io/snyk/vulnerabilities/github/theonethread/falkor-library "Snyk")](https://snyk.io/test/github/theonethread/falkor-library "Visit") &nbsp;
 [![License](https://img.shields.io/npm/l/@falkor/falkor-library "MIT")](https://github.com/theonethread/falkor-library/blob/master/license.txt "Visit")
 
