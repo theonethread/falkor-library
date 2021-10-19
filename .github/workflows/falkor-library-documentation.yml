@@ -33,18 +33,18 @@ jobs:
           npm run doc
           cd ..
 
-      - name: Checkout Documentation
+      - name: Checkout Remote Documentation
         uses: actions/checkout@master
         with:
           repository: theonethread/falkor-library-doc
           path: ./falkor-library-doc
 
-      - name: Update Documentation
+      - name: Update Remote Documentation
         run: |-
-          rm -rf ./falkor-library-doc
+          rm -rf ./falkor-library-doc/**/*
           cp -R ./falkor-library/**/* ./falkor-library-doc
 
-      - name: Push Documentation
+      - name: Push Remote Documentation
         run: |-
           cd ./falkor-library-doc
           git add .
