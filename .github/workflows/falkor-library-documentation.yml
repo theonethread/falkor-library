@@ -38,6 +38,7 @@ jobs:
         with:
           repository: theonethread/falkor-library-doc
           path: ./falkor-library-doc
+          token: ${{ secrets.GHP }}
 
       - name: Update Remote Documentation
         run: |-
