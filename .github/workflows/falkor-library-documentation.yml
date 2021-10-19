@@ -19,6 +19,7 @@ jobs:
         with:
           node-version: 16.x
           cache: npm
+          cache-dependency-path: falkor-library/package-lock.json
 
       - name: Install Npm Dependencies
         run: |-
