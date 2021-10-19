@@ -38,17 +38,18 @@ jobs:
         with:
           repository: theonethread/falkor-library-doc
           path: ./falkor-library-doc
+          token: ${{ secrets.TOKEN }}
 
       - name: Update Remote Documentation
         run: |-
           rm -rf ./falkor-library-doc/**/*
-          cp -R ./falkor-library/.doc/**/* ./falkor-library-doc
+          cp -R ./falkor-library/.doc ./falkor-library-doc
 
       - name: Push Remote Documentation
         run: |-
           cd ./falkor-library-doc
+          git config --local user.name github-actions
+          git config --local user.email github-actions@github.com
           git add .
-          git config user.name github-actions
-          git config user.email github-actions@github.com
           git commit -am "Auto-Update Documentation"
           git push
