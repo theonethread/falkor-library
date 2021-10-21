@@ -1,6 +1,6 @@
 {
   "name": "@falkor/falkor-library",
-  "version": "1.0.0-beta.2",
+  "version": "1.0.0-beta.3",
   "description": "Shared operations library of the Falkor Framework",
   "author": {
     "name": "Barnabas Bucsy",
