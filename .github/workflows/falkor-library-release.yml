@@ -1,0 +1,42 @@
+name: Falkor CI - Release
+
+on:
+  push:
+    branches:
+      - master
+  pull_request:
+    branches:
+      - master
+
+jobs:
+  CIr:
+    name: Release CI Suite
+
+    strategy:
+      matrix:
+        node-version: [14.x, 16.x]
+        os: [ubuntu-latest, windows-latest, macOS-latest]
+
+    runs-on: ${{ matrix.os }}
+
+    steps:
+      - name: GitHub Checkout
+        uses: actions/checkout@v2
+
+      - name: Use Node.js v${{ matrix.node-version }}
+        uses: actions/setup-node@v2
+        with:
+          node-version: ${{ matrix.node-version }}
+          cache: npm
+
+      - name: Install Npm Dependencies
+        run: |-
+          npm ci --ignore-scripts
+
+      - name: Bundle Project
+        run: |-
+          npm run release
+
+      - name: Build Documentation
+        run: |-
+          npm run doc

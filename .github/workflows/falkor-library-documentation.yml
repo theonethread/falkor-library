@@ -1,0 +1,55 @@
+name: Falkor Documentation Deploy
+
+on: workflow_dispatch
+
+jobs:
+  DocDep:
+    name: Documentation Deploy
+
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: GitHub Checkout
+        uses: actions/checkout@v2
+        with:
+          path: ./falkor-library
+
+      - name: Use Node.js v16.x
+        uses: actions/setup-node@v2
+        with:
+          node-version: 16.x
+          cache: npm
+          cache-dependency-path: falkor-library/package-lock.json
+
+      - name: Install Npm Dependencies
+        run: |-
+          cd ./falkor-library
+          npm ci --ignore-scripts
+          cd ..
+
+      - name: Build Documentation
+        run: |-
+          cd ./falkor-library
+          npm run doc
+          cd ..
+
+      - name: Checkout Remote Documentation
+        uses: actions/checkout@master
+        with:
+          repository: theonethread/falkor-library-doc
+          path: ./falkor-library-doc
+          token: ${{ secrets.GHP }}
+
+      - name: Update Remote Documentation
+        run: |-
+          rm -rf ./falkor-library-doc/*
+          cp -R ./falkor-library/.doc/* ./falkor-library-doc
+
+      - name: Push Remote Documentation
+        run: |-
+          cd ./falkor-library-doc
+          git config --local user.name github-actions
+          git config --local user.email github-actions@github.com
+          git add .
+          git commit -am "Auto-Update Documentation"
+          git push

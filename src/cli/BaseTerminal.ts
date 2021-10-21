@@ -12,7 +12,7 @@ export default class BaseTerminal {
     protected readonly ansi: boolean;
     protected readonly streamPrefix = "| ";
     protected readonly storedWrite = process.stdout.write;
-    protected readonly streamResizeListener: () => void;
+    protected readonly streamResizeListener = () => this.internalStreamResizeListener();
     protected interface = readline.createInterface({
         input: process.stdin,
         output: process.stdout,
@@ -20,6 +20,8 @@ export default class BaseTerminal {
         tabSize: 2
     });
     protected cursorShown: boolean = true;
+    protected muted: boolean = false;
+    protected streaming: boolean = false;
     protected streamLevel: number = null;
     protected streamPad: number = null;
     protected streamBuffer: string = null;
@@ -28,7 +30,6 @@ export default class BaseTerminal {
 
     constructor(config: TTerminalConfig, protected logger: Logger, protected theme: Theme) {
         this.ansi = process.stdout.isTTY && config.ansi;
-        this.streamResizeListener = () => this.internalStreamResizeListener();
         if (this.ansi && config.animation) {
             const ansiLog = (str: string) => this.logger.logAnsi(str);
             if (typeof config.animation === "boolean") {
@@ -43,6 +44,14 @@ export default class BaseTerminal {
     }
 
     //#region CURSOR
+
+    public abort(): void {
+        if (this.streaming) {
+            this.endStream();
+            this.logger.error(`aborted stream (SIGINT)`).popPrompt();
+            this.streaming = false;
+        }
+    }
 
     public hideCursor(): void {
         if (this.ansi && this.cursorShown) {
@@ -63,11 +72,17 @@ export default class BaseTerminal {
     //#region MUTE
 
     public mute(): void {
-        process.stdout.write = (): boolean => true;
+        if (!this.muted) {
+            process.stdout.write = (): boolean => true;
+            this.muted = true;
+        }
     }
 
     public unmute(): void {
-        process.stdout.write = this.storedWrite;
+        if (this.muted) {
+            process.stdout.write = this.storedWrite;
+            this.muted = false;
+        }
     }
 
     //#endregion
@@ -75,6 +90,7 @@ export default class BaseTerminal {
     //#region STREAM
 
     public startStream(level: LogLevel): (chunk: string, isError?: boolean) => void {
+        this.streaming = true;
         this.streamLevel = level;
         this.streamBuffer = "";
         const prefix = this.logger.log(level, [this.streamPrefix], true);
@@ -85,9 +101,7 @@ export default class BaseTerminal {
                 this.streamBuffer += isError ? this.theme.formatSeverityError(level, chunk) : chunk;
             };
         } else if (this.streamPad === null) {
-            if (this.terminalAnimation) {
-                this.terminalAnimation.start();
-            }
+            this.terminalAnimation?.start();
             return (chunk: string, isError?: boolean) => {
                 this.streamBuffer += isError ? this.theme.formatSeverityError(level, chunk) : chunk;
             };
@@ -147,6 +161,7 @@ export default class BaseTerminal {
         this.streamBuffer = null;
         this.lineBuffer = null;
         this.streamPad = null;
+        this.streaming = false;
         return ret;
     }
 
