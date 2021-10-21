@@ -51,10 +51,6 @@
     "typedoc-plugin-missing-exports": "0.22.3"
   },
   "dependencies": {
-    "@types/shelljs": "0.8.9",
-    "@types/figlet": "1.5.4",
-    "@types/semver": "7.3.8",
-    "@types/node-fetch": "3.0.3",
     "chalk": "4.1.2",
     "strip-ansi": "7.0.1",
     "ansi-escapes": "5.0.0",
@@ -63,5 +59,11 @@
     "pretty-time": "1.1.0",
     "shelljs": "0.8.4",
     "node-fetch": "3.0.0"
+  },
+  "peerDependencies": {
+    "@types/shelljs": "0.8.9",
+    "@types/figlet": "1.5.4",
+    "@types/semver": "7.3.9",
+    "@types/node-fetch": "3.0.3"
   }
 }
