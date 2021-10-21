@@ -29,12 +29,12 @@ export type TThemeConfig = {
     warning?: string;
     error?: string;
     fatal?: string;
-    "debug-error": string;
-    "notice-error": string;
-    "info-error": string;
-    "warning-error": string;
-    "error-error": string;
-    "fatal-error": string;
+    "debug-error"?: string;
+    "notice-error"?: string;
+    "info-error"?: string;
+    "warning-error"?: string;
+    "error-error"?: string;
+    "fatal-error"?: string;
     trace?: string;
     path?: string;
     command?: string;
