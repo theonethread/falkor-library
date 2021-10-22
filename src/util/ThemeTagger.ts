@@ -92,7 +92,7 @@ export default class ThemeTagger {
     }
 
     /** Template literal tag for 'Theme::formatSuccess' */
-    public scc(strArr: TemplateStringsArray, ...expr: string[]): string {
+    public scs(strArr: TemplateStringsArray, ...expr: string[]): string {
         return this.formatExpression(this.theme.formatSuccess, strArr, expr);
     }
 
