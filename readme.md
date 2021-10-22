@@ -3,7 +3,8 @@
 [![Npm Keywords](https://img.shields.io/github/package-json/keywords/theonethread/falkor-library "Keywords")](https://www.npmjs.com/package/@falkor/falkor-library "Visit") &nbsp;
 [![Npm Package](https://img.shields.io/npm/v/@falkor/falkor-library "Npm")](https://www.npmjs.com/package/@falkor/falkor-library "Visit") &nbsp;
 [![Node Version](https://img.shields.io/node/v/@falkor/falkor-library "Node")](https://nodejs.org/ "Visit") &nbsp;
-[![CI](https://img.shields.io/github/workflow/status/theonethread/falkor-library/Falkor%20CI%20-%20Develop "CI")](https://github.com/theonethread/falkor-library/actions "Visit") &nbsp;
+[![Build](https://img.shields.io/github/workflow/status/theonethread/falkor-library/Falkor%20CI%20-%20Develop "Build")](https://github.com/theonethread/falkor-library/actions "Visit") &nbsp;
+[![Security](https://img.shields.io/github/workflow/status/theonethread/falkor-library/Falkor%20CI%20-%20Security?label=security "Security")](https://github.com/theonethread/falkor-library/actions "Visit") &nbsp;
 [![Activity](https://img.shields.io/github/last-commit/theonethread/falkor-library "Activity")](https://github.com/theonethread/falkor-library "Visit") &nbsp;
 [![Falkor Bundler](https://img.shields.io/npm/dependency-version/@falkor/falkor-library/dev/@falkor/falkor-bundler "Falkor Bundler")](https://www.npmjs.com/package/@falkor/falkor-bundler "Visit") &nbsp;
 [![Typedoc](https://img.shields.io/npm/dependency-version/@falkor/falkor-library/dev/typedoc "Typedoc")](https://www.npmjs.com/package/typedoc "Visit") &nbsp;
