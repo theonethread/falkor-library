@@ -2,6 +2,7 @@ import chalk from "chalk";
 
 import { LogLevel } from "../cli/Logger.js";
 import { TThemeConfig } from "../config/Config.js";
+import ThemeTagger from "../util/ThemeTagger.js";
 
 export const enum ThemeFormatKey {
     // brand
@@ -38,11 +39,15 @@ export default class Theme {
         "fatal-error"
     ];
 
+    public readonly tagger: ThemeTagger;
+
     public get monochrome(): boolean {
         return this.config === null;
     }
 
-    constructor(protected config: TThemeConfig) {}
+    constructor(protected config: TThemeConfig) {
+        this.tagger = new ThemeTagger(this);
+    }
 
     //#region BRAND
 
