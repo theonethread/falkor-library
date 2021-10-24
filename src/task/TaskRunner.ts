@@ -200,14 +200,21 @@ export default class TaskRunner extends TaskHost {
     protected handleError(error: Error): void {
         this.logger.emptyPrompt(1);
         const isAbort = error instanceof FalkorError && error.code === TaskHostErrorCodes.SUBTASK_ABORT;
-        if (this.currentTask.cancel) {
-            this.currentTask.cancel(isAbort);
-        }
         if (isAbort) {
             this.logAbort();
+            this.logger.pushPrompt();
+            if (this.currentTask.cancel) {
+                this.currentTask.cancel(isAbort);
+            }
+            this.logger.popPrompt();
             this.endSubtaskAbort("sequence aborted", true);
         } else {
             this.logError(error);
+            this.logger.pushPrompt();
+            if (this.currentTask.cancel) {
+                this.currentTask.cancel(isAbort);
+            }
+            this.logger.popPrompt();
             this.endSubtaskError("sequence failed", true);
         }
         process.exit(1);
@@ -215,15 +222,17 @@ export default class TaskRunner extends TaskHost {
 
     protected logAbort(): void {
         this.logger.fatal(
-            `${this.abortPrompt} ${this.prefix} aborted ${this.theme.formatInfo(`(${this.breadcrumbs})`)}`
+            `${this.abortPrompt} aborted ${this.theme.formatInfo(
+                `(${this.breadcrumbs}${this.currentTask ? this.breadcrumbJoiner + this.currentTask.id : ""})`
+            )}`
         );
     }
 
     protected logError(error: Error): void {
         this.logger
             .fatal(
-                `${this.panicPrompt} ${this.prefix} entering panic mode ${this.theme.formatInfo(
-                    `(${this.breadcrumbs})`
+                `${this.panicPrompt} failed ${this.theme.formatInfo(
+                    `(${this.breadcrumbs}${this.currentTask ? this.breadcrumbJoiner + this.currentTask.id : ""})`
                 )}`
             )
             .debug(`${this.debugPrompt} ${error.stack ? error.stack : error.name + ": " + error.message}`);
