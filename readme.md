@@ -159,9 +159,21 @@ The `feature/*` branches usually hold ideas and POC code, these will only be mer
 
 ### **GitHub Actions**
 
-Automatic builds are achieved via GitHub actions, CI will make nightly builds of the `develop` branch (using Ubuntu image), and thoroughly test `master` when there is a pull request, or commit on it (using Ubuntu - Win - MacOS image matrix). The workflows can be found [here](https://github.com/theonethread/falkor-auth-server/blob/develop/.github/workflows "Open").
+The workflows can be found [here](https://github.com/theonethread/falkor-library/blob/develop/.github/workflows "Open").
+
+#### **Continuous Integration**
+
+Automatic builds are achieved via GitHub actions, CI will make nightly builds of the `develop` branch (using Ubuntu image), and test `master` when there is a pull request, or commit on it (using Ubuntu - Win - MacOS image matrix).
+
+#### **API Documentation**
 
 There is also a manually triggered workflow, that deploys generated documentation to [GitHub Pages](https://theonethread.github.io/falkor-library-doc "Visit").
+
+#### **Security**
+
+The project uses [CodeQL](https://codeql.github.com "Visit") and [Snyk](https://snyk.io "Visit") to ensure standard security.
+
+> _[Vulnerability Disclosure Policy](https://github.com/theonethread/falkor-library/security/policy "Open")_
 
 ### **Open Source**
 
