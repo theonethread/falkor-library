@@ -16,6 +16,8 @@ export default class TaskHost extends ScriptHost {
     protected readonly taskPrompt = "[#]";
     protected readonly panicPrompt = "[P]";
     protected readonly abortPrompt = "[A]";
+    protected readonly infoPrompt = "[i]";
+    protected readonly warningPrompt = "[w]";
     protected readonly breadcrumbJoiner = " > ";
     protected readonly brand: Brand;
     protected readonly times: [number, number][] = [];

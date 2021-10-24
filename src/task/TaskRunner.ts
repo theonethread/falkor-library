@@ -88,10 +88,12 @@ export default class TaskRunner extends TaskHost {
         task.setup(this.taskOptions);
     }
 
-    public async run(idArr?: string[]): Promise<void> {
+    public async run(idArr?: string | string[]): Promise<void> {
         const dependencies: TCommandDependencies<semver.SemVer> = {};
         if (!idArr) {
             idArr = Object.keys(this.collection);
+        } else if (!Array.isArray(idArr)) {
+            idArr = [idArr];
         }
         this.currentSequence = idArr;
         try {
