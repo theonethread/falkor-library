@@ -106,7 +106,7 @@ export default class ThemeTagger {
     //#region HELPERS
 
     protected formatExpression(func: (str: string) => string, strArr: TemplateStringsArray, expr: string[]): string {
-        return strArr.map((s, i) => func.call(this.theme, s) + (expr[i] || "")).join("");
+        return strArr.map((s, i) => func.call(this.theme, s + (expr[i] || ""))).join("");
     }
 
     //#endregion
