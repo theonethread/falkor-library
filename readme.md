@@ -3,7 +3,8 @@
 [![Npm Keywords](https://img.shields.io/github/package-json/keywords/theonethread/falkor-library "Keywords")](https://www.npmjs.com/package/@falkor/falkor-library "Visit") &nbsp;
 [![Npm Package](https://img.shields.io/npm/v/@falkor/falkor-library "Npm")](https://www.npmjs.com/package/@falkor/falkor-library "Visit") &nbsp;
 [![Node Version](https://img.shields.io/node/v/@falkor/falkor-library "Node")](https://nodejs.org/ "Visit") &nbsp;
-[![CI](https://img.shields.io/github/workflow/status/theonethread/falkor-library/Falkor%20CI%20-%20Release "CI")](https://github.com/theonethread/falkor-library/actions "Visit") &nbsp;
+[![Build](https://img.shields.io/github/workflow/status/theonethread/falkor-library/Falkor%20CI%20-%20Release "Build")](https://github.com/theonethread/falkor-library/actions "Visit") &nbsp;
+[![Security](https://img.shields.io/github/workflow/status/theonethread/falkor-library/Falkor%20CI%20-%20Security?label=security "Security")](https://github.com/theonethread/falkor-library/actions "Visit") &nbsp;
 [![Activity](https://img.shields.io/github/last-commit/theonethread/falkor-library "Activity")](https://github.com/theonethread/falkor-library "Visit") &nbsp;
 [![Falkor Bundler](https://img.shields.io/npm/dependency-version/@falkor/falkor-library/dev/@falkor/falkor-bundler "Falkor Bundler")](https://www.npmjs.com/package/@falkor/falkor-bundler "Visit") &nbsp;
 [![Typedoc](https://img.shields.io/npm/dependency-version/@falkor/falkor-library/dev/typedoc "Typedoc")](https://www.npmjs.com/package/typedoc "Visit") &nbsp;
@@ -31,13 +32,13 @@ class ExampleTask extends falkor.Task {
             // *optional* global command-line dependencies
             {
                 // lazy shorthand syntax
-                git: "2.30.1",
+                git: "2.33.0",
                 // below dependency object is the equivalent of "11.0.1" (lazy shorthand syntax string, like above)
                 // this is *exactly* how the library unfolds shorthand dependencies
                 // @see TaskRunner::mergeDependencies
                 "clang++": {
                     command: "clang++ --version",
-                    minVersion: "11.0.1",
+                    minVersion: "12.0.0",
                     versionMatch: /version\s*([^\s]+)/
                 }
             }
@@ -46,6 +47,9 @@ class ExampleTask extends falkor.Task {
 
     // necessary implementation of abstract async function (entry point)
     public async run(): Promise<void> {
+        const _ = this.theme.tagger;
+        this.logger.info(`[i] Tagged template literal support ${_.scs`is here`} ${_.pth`finally`}!`);
+
         // asynchronous command-line execution
         // (command output is handled by library)
         const fetchResult = await this.exec("git fetch --all --tags" /*+ " --recurse-submodules" /**/, {
@@ -76,7 +80,7 @@ class ExampleTask extends falkor.Task {
                 // if answers are provided, the input will be tested against them
                 answers: ["node", "python", "erlang", "go", "php", "lisp", "fortran"],
                 // forces answer items to be displayed line-by-line
-                // (this also makes them selectable by answer number, or interactively)
+                // (this also makes them selectable by answer number-, or interactively)
                 list: true
             }
         );
@@ -106,12 +110,10 @@ class ExampleTask extends falkor.Task {
             .pushPrompt("[NIRVANA]")
             // level of output is based on configuration, one can use:
             // debug(), notice(), info(), warning(), error(), fatal()
-            // @see LogLevel
             .info("luv' this band")
             // prompts also support internal ansi color sequence(s) - if underlying terminal does too
-            .pushPrompt(this.theme.formatTrace("nevermind"))
+            .pushPrompt(_.trc`nevermind`)
             // (level of output can be overridden in the '.ops.json' file in project root)
-            // @see LogLevel
             .info(
                 // inline styling of log chunks is always done through the theme
                 this.theme.formatSuccess(
@@ -123,7 +125,18 @@ class ExampleTask extends falkor.Task {
             // discard the last two demonstrational prompts
             .popPrompt(2);
     }
+
+    // optional *synchronous* error & abort handler
+    public cancel(isAbort: boolean): void {
+        this.logger.info(
+            `${this.theme.formatTask(this.id)} executing cancel method ${this.theme.formatTrace(
+                isAbort ? "(abort)" : "(error)"
+            )}`
+        );
+    }
 }
+
+export default new ExampleTask();
 ```
 
 ## **Further Development**
@@ -158,9 +171,21 @@ The `feature/*` branches usually hold ideas and POC code, these will only be mer
 
 ### **GitHub Actions**
 
-Automatic builds are achieved via GitHub actions, CI will make nightly builds of the `develop` branch (using Ubuntu image), and thoroughly test `master` when there is a pull request, or commit on it (using Ubuntu - Win - MacOS image matrix). The workflows can be found [here](https://github.com/theonethread/falkor-auth-server/blob/develop/.github/workflows "Open").
+The workflows can be found [here](https://github.com/theonethread/falkor-library/blob/develop/.github/workflows "Open").
+
+#### **Continuous Integration**
+
+Automatic builds are achieved via GitHub actions, CI will make nightly builds of the `develop` branch (using Ubuntu image), and test `master` when there is a pull request, or commit on it (using Ubuntu - Win - MacOS image matrix).
+
+#### **API Documentation**
 
 There is also a manually triggered workflow, that deploys generated documentation to [GitHub Pages](https://theonethread.github.io/falkor-library-doc "Visit").
+
+#### **Security**
+
+The project uses [CodeQL](https://codeql.github.com "Visit") and [Snyk](https://snyk.io "Visit") to ensure standard security.
+
+> _The **Falkor Framework** supports a healthy and ubiquitous Internet Immune System enabled by security research, reporting, and disclosure. Check out our [Vulnerability Disclosure Policy](https://github.com/theonethread/falkor-bundler/security/policy "Open") - based on [disclose.io](https://disclose.io "Visit")'s best practices._
 
 ### **Open Source**
 

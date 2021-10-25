@@ -34,7 +34,7 @@ jobs:
           cd ..
 
       - name: Checkout Remote Documentation
-        uses: actions/checkout@master
+        uses: actions/checkout@v2
         with:
           repository: theonethread/falkor-library-doc
           path: ./falkor-library-doc

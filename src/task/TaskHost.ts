@@ -16,6 +16,8 @@ export default class TaskHost extends ScriptHost {
     protected readonly taskPrompt = "[#]";
     protected readonly panicPrompt = "[P]";
     protected readonly abortPrompt = "[A]";
+    protected readonly infoPrompt = "[i]";
+    protected readonly warningPrompt = "[w]";
     protected readonly breadcrumbJoiner = " > ";
     protected readonly brand: Brand;
     protected readonly times: [number, number][] = [];
@@ -34,9 +36,7 @@ export default class TaskHost extends ScriptHost {
             .info(this.theme.formatBrand(this.brand.title))
             .popPrompt()
             .pushPrompt(this.theme.formatDebug(this.debugPrompt))
-            .debug(
-                `${this.theme.formatSeverityError(LogLevel.DEBUG, "CONFIG:")} ${JSON.stringify(this.config, null, 2)}`
-            )
+            .debug(`${this.theme.formatSeverityError(LogLevel.DEBUG, "CONFIG:")} ${JSON.stringify(this.config)}`)
             .popPrompt();
     }
 
