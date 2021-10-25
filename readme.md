@@ -32,13 +32,13 @@ class ExampleTask extends falkor.Task {
             // *optional* global command-line dependencies
             {
                 // lazy shorthand syntax
-                git: "2.30.1",
+                git: "2.33.0",
                 // below dependency object is the equivalent of "11.0.1" (lazy shorthand syntax string, like above)
                 // this is *exactly* how the library unfolds shorthand dependencies
                 // @see TaskRunner::mergeDependencies
                 "clang++": {
                     command: "clang++ --version",
-                    minVersion: "11.0.1",
+                    minVersion: "12.0.0",
                     versionMatch: /version\s*([^\s]+)/
                 }
             }
@@ -47,6 +47,9 @@ class ExampleTask extends falkor.Task {
 
     // necessary implementation of abstract async function (entry point)
     public async run(): Promise<void> {
+        const _ = this.theme.tagger;
+        this.logger.info(`[i] Tagged template literal support ${_.scs`is here`} ${_.pth`finally`}!`);
+
         // asynchronous command-line execution
         // (command output is handled by library)
         const fetchResult = await this.exec("git fetch --all --tags" /*+ " --recurse-submodules" /**/, {
@@ -77,7 +80,7 @@ class ExampleTask extends falkor.Task {
                 // if answers are provided, the input will be tested against them
                 answers: ["node", "python", "erlang", "go", "php", "lisp", "fortran"],
                 // forces answer items to be displayed line-by-line
-                // (this also makes them selectable by answer number, or interactively)
+                // (this also makes them selectable by answer number-, or interactively)
                 list: true
             }
         );
@@ -107,12 +110,10 @@ class ExampleTask extends falkor.Task {
             .pushPrompt("[NIRVANA]")
             // level of output is based on configuration, one can use:
             // debug(), notice(), info(), warning(), error(), fatal()
-            // @see LogLevel
             .info("luv' this band")
             // prompts also support internal ansi color sequence(s) - if underlying terminal does too
-            .pushPrompt(this.theme.formatTrace("nevermind"))
+            .pushPrompt(_.trc`nevermind`)
             // (level of output can be overridden in the '.ops.json' file in project root)
-            // @see LogLevel
             .info(
                 // inline styling of log chunks is always done through the theme
                 this.theme.formatSuccess(
@@ -124,7 +125,18 @@ class ExampleTask extends falkor.Task {
             // discard the last two demonstrational prompts
             .popPrompt(2);
     }
+
+    // optional *synchronous* error & abort handler
+    public cancel(isAbort: boolean): void {
+        this.logger.info(
+            `${this.theme.formatTask(this.id)} executing cancel method ${this.theme.formatTrace(
+                isAbort ? "(abort)" : "(error)"
+            )}`
+        );
+    }
 }
+
+export default new ExampleTask();
 ```
 
 ## **Further Development**
