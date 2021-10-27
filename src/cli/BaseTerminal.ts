@@ -43,8 +43,6 @@ export default class BaseTerminal {
         process.on("exit", () => this.close());
     }
 
-    //#region CURSOR
-
     public abort(): void {
         if (this.streaming) {
             this.endStream();
@@ -52,6 +50,8 @@ export default class BaseTerminal {
             this.streaming = false;
         }
     }
+
+    //#region CURSOR
 
     public hideCursor(): void {
         if (this.ansi && this.cursorShown) {

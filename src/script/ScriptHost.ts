@@ -6,7 +6,7 @@ import fetch, { RequestInit } from "node-fetch";
 
 import Config from "../config/Config.js";
 import Logger, { LogLevel } from "../cli/Logger.js";
-import Terminal from "../cli/Terminal.js";
+import BufferedTerminal from "../cli/BufferedTerminal.js";
 import Ascii from "../util/Ascii.js";
 import Theme from "../util/Theme.js";
 
@@ -72,7 +72,7 @@ export default class ScriptHost {
     protected readonly theme: Theme;
     protected readonly ascii: Ascii;
     protected readonly logger: Logger;
-    protected readonly terminal: Terminal;
+    protected readonly terminal: BufferedTerminal;
     protected readonly commandPrompt: string;
     protected readonly fetchPrompt: string;
     protected readonly shell: TSubShell = {
@@ -94,12 +94,12 @@ export default class ScriptHost {
         grep: shell.grep
     };
 
-    constructor() {
+    constructor(answerBuffer: string[]) {
         this.config = new Config();
         this.theme = new Theme(this.config.theme);
         this.ascii = new Ascii(this.theme);
         this.logger = new Logger(this.config.logger, this.theme);
-        this.terminal = new Terminal(this.config.terminal, this.logger, this.theme, this.ascii);
+        this.terminal = new BufferedTerminal(this.config.terminal, this.logger, this.theme, this.ascii, answerBuffer);
         this.commandPrompt = this.theme.formatCommand("[$]");
         this.fetchPrompt = this.theme.formatCommand("[@]");
         Object.freeze(this.shell);

@@ -74,8 +74,8 @@ export default class TaskRunner extends TaskHost {
     protected currentIndex: number = null;
     protected currentTask: Task = null;
 
-    constructor(appName?: string) {
-        super(appName);
+    constructor(appName?: string, answerBuffer: string[] = null) {
+        super(appName, answerBuffer);
         Object.freeze(this.taskOptions);
     }
 

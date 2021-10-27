@@ -27,8 +27,8 @@ export default class TaskHost extends ScriptHost {
         return this.subtaskTitles.join(this.breadcrumbJoiner);
     }
 
-    constructor(protected appName: string = "Sequencer") {
-        super();
+    constructor(protected appName: string = "Sequencer", answerBuffer: string[]) {
+        super(answerBuffer);
 
         this.brand = new Brand(this.config.brand, this.ascii, appName);
         this.logger
