@@ -62,9 +62,7 @@ export default class BufferedTerminal extends Terminal {
                 .warning(
                     options?.password
                         ? "buffered input failure"
-                        : `${options?.answers ? "failed " : ""}buffered input: '${this.theme.formatQuestion(
-                              Array.isArray(response) ? response.join(", ") : response
-                          )}'`
+                        : `failed buffered input: '${this.theme.formatQuestion(buffered)}'`
                 )
                 .popPrompt();
             return null;
