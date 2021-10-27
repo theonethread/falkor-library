@@ -25,6 +25,7 @@ export default class BufferedTerminal extends Terminal {
             let response: string | string[];
             if (options) {
                 if (options.password) {
+                    this.logger.warning("using buffered password");
                     response = buffered;
                 } else if (options.answers) {
                     if (options.multi) {
