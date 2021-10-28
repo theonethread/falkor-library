@@ -1,6 +1,6 @@
 {
   "name": "@falkor/falkor-library",
-  "version": "1.0.0-beta.3",
+  "version": "1.0.0-beta.4",
   "description": "Shared operations library of the Falkor Framework",
   "author": {
     "name": "Barnabas Bucsy",
@@ -39,7 +39,7 @@
     "debug": "rimraf .dist/**/* && falkor-bundler --debug",
     "release": "rimraf .dist/**/* && falkor-bundler --release",
     "doc": "rimraf .doc/**/* && typedoc --hideGenerator --includeVersion --disableSources --excludePrivate --excludeExternals --name \"Falkor Operations Library\" --internalNamespace @internal --out .doc src/index.ts",
-    "prepublishOnly": "npm run release"
+    "prepublishOnly": "npm ci && npm run release && npm run doc"
   },
   "devDependencies": {
     "@types/node": "14.17.29",
@@ -51,7 +51,7 @@
     "typedoc": "0.22.7",
     "typedoc-plugin-rename-defaults": "0.4.0",
     "typedoc-plugin-missing-exports": "0.22.3",
-    "@falkor/falkor-bundler": "1.1.4"
+    "@falkor/falkor-bundler": "1.1.5"
   },
   "dependencies": {
     "chalk": "4.1.2",

@@ -74,8 +74,8 @@ export default class TaskRunner extends TaskHost {
     protected currentIndex: number = null;
     protected currentTask: Task = null;
 
-    constructor(appName?: string) {
-        super(appName);
+    constructor(appName?: string, answerBuffer: string[] = null) {
+        super(appName, answerBuffer);
         Object.freeze(this.taskOptions);
     }
 
@@ -205,7 +205,7 @@ export default class TaskRunner extends TaskHost {
         if (isAbort) {
             this.logAbort();
             this.logger.pushPrompt();
-            if (this.currentTask.cancel) {
+            if (this.currentTask?.cancel) {
                 this.currentTask.cancel(isAbort);
             }
             this.logger.popPrompt();
@@ -213,7 +213,7 @@ export default class TaskRunner extends TaskHost {
         } else {
             this.logError(error);
             this.logger.pushPrompt();
-            if (this.currentTask.cancel) {
+            if (this.currentTask?.cancel) {
                 this.currentTask.cancel(isAbort);
             }
             this.logger.popPrompt();
