@@ -51,7 +51,7 @@
     "typedoc": "0.22.7",
     "typedoc-plugin-rename-defaults": "0.4.0",
     "typedoc-plugin-missing-exports": "0.22.3",
-    "@falkor/falkor-bundler": "1.1.4"
+    "@falkor/falkor-bundler": "1.1.5"
   },
   "dependencies": {
     "chalk": "4.1.2",
