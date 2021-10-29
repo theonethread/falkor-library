@@ -73,6 +73,7 @@ export default class TaskRunner extends TaskHost {
     // NOTE: throwing from the listener will not be caught by async try-catch
     protected readonly sigintListener = () => this.handleError(this.endSubtaskAbort("received 'SIGINT'", false, true));
     protected currentSequence: string[];
+    protected currentSequenceArguments: { [key: string]: { [key: string]: any } };
     protected currentIndex: number = null;
     protected currentTask: Task = null;
 
@@ -93,7 +94,10 @@ export default class TaskRunner extends TaskHost {
         task.setup(this.taskOptions);
     }
 
-    public async run(idArr?: string | string[]): Promise<void> {
+    public async run(
+        idArr?: string | string[],
+        argumentVector?: { [key: string]: { [key: string]: any } }
+    ): Promise<void> {
         const dependencies: TCommandDependencies<semver.SemVer> = {};
         if (!idArr) {
             idArr = Object.keys(this.collection);
@@ -101,6 +105,7 @@ export default class TaskRunner extends TaskHost {
             idArr = [idArr];
         }
         this.currentSequence = idArr;
+        this.currentSequenceArguments = argumentVector;
         try {
             this.mergeDependencies(dependencies);
             await this.checkDependencies(dependencies);
@@ -193,14 +198,17 @@ export default class TaskRunner extends TaskHost {
             this.currentIndex++;
             this.currentTask = this.collection[id];
             this.startSubtask(this.currentTask.id);
+            const argv = (this.currentSequenceArguments && this.currentSequenceArguments[id]) || null;
+            this.logger.debug(`${this.theme.formatSeverityError(0, "ARGV:")} ${JSON.stringify(argv)}`);
             process.once("SIGINT", this.sigintListener);
-            await this.currentTask.run();
+            await this.currentTask.run(argv);
             process.removeListener("SIGINT", this.sigintListener);
             this.endSubtaskSuccess("finished task");
         }
         this.currentIndex = null;
         this.currentTask = null;
         this.currentSequence = null;
+        this.currentSequenceArguments = null;
         this.endSubtaskSuccess("done");
     }
 
