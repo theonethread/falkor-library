@@ -167,7 +167,7 @@ export default class TaskRunner extends TaskHost {
         if (keys.length) {
             this.startSubtask(`${this.prefix} Dependency Check`);
             for (const dep of keys) {
-                this.logger.info(`[i] checking '${this.theme.formatCommand(dep)}'`).pushPrompt();
+                this.logger.info(`${this.infoPrompt} checking '${this.theme.formatCommand(dep)}'`).pushPrompt();
                 const d = dependencies[dep];
                 const ret = await this.exec(d.command);
                 if (!ret.success) {

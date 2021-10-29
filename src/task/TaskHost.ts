@@ -35,7 +35,7 @@ export default class TaskHost extends ScriptHost {
             .pushPrompt(this.theme.formatBrand(this.copyrightPrompt))
             .info(this.theme.formatBrand(this.brand.title))
             .popPrompt()
-            .pushPrompt(this.theme.formatDebug(this.debugPrompt))
+            .pushPrompt(this.debugPrompt)
             .debug(`${this.theme.formatSeverityError(LogLevel.DEBUG, "CONFIG:")} ${JSON.stringify(this.config)}`)
             .debug(
                 `${this.theme.formatSeverityError(LogLevel.DEBUG, "ANSWER BUFFER:")} ${JSON.stringify(answerBuffer)}`
