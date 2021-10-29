@@ -63,7 +63,7 @@
     "shelljs": "0.8.4",
     "node-fetch": "3.0.0"
   },
-  "peerDependencies": {
+  "optionalDependencies": {
     "@types/shelljs": "0.8.9",
     "@types/figlet": "1.5.4",
     "@types/semver": "7.3.9"
