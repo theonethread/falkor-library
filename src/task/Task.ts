@@ -59,5 +59,5 @@ export default abstract class Task {
 
     public abstract run(argv?: { [key: string]: any }): Promise<void>;
 
-    public cancel?(isAbort: boolean): void;
+    public abstract cancel?(isAbort: boolean): void;
 }
