@@ -51,7 +51,7 @@ export default class Logger {
     }
 
     public clearCurrentPrompt(): Logger {
-        this.prompt[this.prompt.length - 1] = "   ";
+        this.prompt.push("".padEnd(stripAnsi(this.prompt.pop()).length));
         return this;
     }
 

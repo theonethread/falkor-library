@@ -163,7 +163,7 @@ export default class ScriptHost {
     }
 
     protected async fetchText(url: string, options: RequestInit = null): Promise<TFetchReturnValue<string>> {
-        options = this.sanitizeOptions(this.defaultFetchTextOptions, options);
+        options = this.sanitizeFetchOptions(this.defaultFetchTextOptions, options);
         this.logger
             .pushPrompt(this.fetchPrompt)
             .notice("fetchText:", this.theme.formatCommand(url), JSON.stringify(options, null, 2))
@@ -190,7 +190,7 @@ export default class ScriptHost {
     }
 
     protected async fetchJson<T>(url: string, options: RequestInit = null): Promise<TFetchReturnValue<T>> {
-        options = this.sanitizeOptions(this.defaultFetchJsonOptions, options);
+        options = this.sanitizeFetchOptions(this.defaultFetchJsonOptions, options);
         this.logger
             .pushPrompt(this.fetchPrompt)
             .notice("fetchJson:", this.theme.formatCommand(url), JSON.stringify(options, null, 2))
@@ -222,7 +222,7 @@ export default class ScriptHost {
         return ret;
     }
 
-    protected sanitizeOptions(builtIn: RequestInit, options: RequestInit): RequestInit {
+    protected sanitizeFetchOptions(builtIn: RequestInit, options: RequestInit): RequestInit {
         if (!options) {
             options = {};
         }

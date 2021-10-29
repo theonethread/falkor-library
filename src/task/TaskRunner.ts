@@ -46,11 +46,13 @@ export type TLazyCommandDependencies = {
 };
 
 export const enum TaskRunnerErrorCodes {
+    RESERVED_ID = "runner-id-reserved",
     DUPLICATE_ID = "runner-id-duplicate",
     INVALID_ID = "runner-id-invalid"
 }
 
 export default class TaskRunner extends TaskHost {
+    protected readonly reservedTaskNames = ["exit"];
     protected readonly prefix = this.theme.formatBrand("FALKOR:");
     protected readonly versionRe = /version\s*([^\s]+)/;
     protected readonly collection: { [id: string]: Task } = {};
@@ -81,6 +83,9 @@ export default class TaskRunner extends TaskHost {
 
     /** @throws FalkorError: TaskRunnerErrorCodes.DUPLICATE_ID */
     public register(task: Task): void {
+        if (this.reservedTaskNames.includes(task.id)) {
+            throw new FalkorError(TaskRunnerErrorCodes.RESERVED_ID, `TaskRunner: reserved id '${task.id}'`);
+        }
         if (this.collection[task.id]) {
             throw new FalkorError(TaskRunnerErrorCodes.DUPLICATE_ID, `TaskRunner: duplicate id '${task.id}'`);
         }
