@@ -62,7 +62,7 @@ export default class Terminal extends BaseTerminal {
         super.abort();
         if (this.asking) {
             this.responseAbort();
-            //this.close(false);
+            this.close(false);
             this.logger.error(`aborted input (SIGINT)`).popPrompt();
             this.asking = false;
         }
