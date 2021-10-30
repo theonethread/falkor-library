@@ -14,7 +14,8 @@ export default class TerminalAnimation {
     protected readonly printLength: number;
 
     protected currentFrame: number;
-    protected timeout: NodeJS.Timeout;
+    protected extraPadding: number;
+    protected intervalTimeout: NodeJS.Timeout;
     protected printed: boolean;
     protected frames: string[];
 
@@ -44,14 +45,15 @@ export default class TerminalAnimation {
         this.empty = " ".repeat(this.printLength);
     }
 
-    public async start(): Promise<void> {
+    public async start(padding: number = 0): Promise<void> {
         this.currentFrame = 0;
+        this.extraPadding = padding;
         this.printFrame();
         this.loop();
     }
 
     public stop(): void {
-        clearTimeout(this.timeout);
+        clearInterval(this.intervalTimeout);
         this.clearFrame();
     }
 
@@ -62,12 +64,11 @@ export default class TerminalAnimation {
             this.currentFrame++;
         }
         this.printFrame();
-        this.loop();
     }
 
     public printFrame(): void {
         this.streamLog(
-            (this.printed ? ansiEscapes.cursorBackward(this.printLength) : "") +
+            (this.printed ? ansiEscapes.cursorBackward(this.printLength) : "".padEnd(this.extraPadding)) +
                 this.theme.formatCommand(this.frames[this.currentFrame])
         );
         this.printed = true;
@@ -76,13 +77,15 @@ export default class TerminalAnimation {
     public clearFrame(): void {
         if (this.printed) {
             this.streamLog(
-                ansiEscapes.cursorBackward(this.printLength) + this.empty + ansiEscapes.cursorBackward(this.printLength)
+                ansiEscapes.cursorBackward(this.printLength) +
+                    this.empty +
+                    ansiEscapes.cursorBackward(this.printLength + this.extraPadding)
             );
             this.printed = false;
         }
     }
 
     protected loop(): void {
-        this.timeout = setTimeout(() => this.nextFrame(), this.frameMs);
+        this.intervalTimeout = setInterval(() => this.nextFrame(), this.frameMs);
     }
 }

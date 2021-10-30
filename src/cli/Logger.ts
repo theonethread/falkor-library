@@ -132,7 +132,7 @@ export default class Logger {
         pad += logStarter.length;
         let log: string;
         if (this.theme.monochrome) {
-            pad += this.txtSeverity[level].length + this.joiner.length;
+            pad += 3 + this.joiner.length;
             message.unshift(logStarter + this.txtSeverity[level]);
             log = this.padNewLines(message.join(this.joiner), pad);
         } else {
@@ -145,6 +145,20 @@ export default class Logger {
             shell.echo(log);
         }
         return log;
+    }
+
+    public getCurrentPad(): number {
+        let pad = stripAnsi(this.prompt.join(this.promptJoiner)).length;
+        if (pad) {
+            pad += this.joiner.length;
+        }
+        if (this.timestamp) {
+            pad += 24 + this.joiner.length;
+        }
+        if (this.theme.monochrome) {
+            pad += 3 + this.joiner.length;
+        }
+        return pad;
     }
 
     public padNewLines(str: string, pad: number, prefix: string = ""): string {
