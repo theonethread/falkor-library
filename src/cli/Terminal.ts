@@ -13,12 +13,13 @@ const enum InteractiveMoveDirection {
     NEXT
 }
 
-export type AskOptions = {
+export type TAskOptions = {
     password?: boolean;
     answers?: string[];
     descriptions?: string[];
     list?: boolean;
     multi?: boolean;
+    timeout?: number;
 };
 
 export default class Terminal extends BaseTerminal {
@@ -41,6 +42,7 @@ export default class Terminal extends BaseTerminal {
     protected responseTimeout: NodeJS.Timeout;
     protected responseAbort: () => void;
     protected timedOutResponse: boolean;
+    protected timeoutMs: number;
 
     constructor(config: TTerminalConfig, protected logger: Logger, protected theme: Theme, protected ascii: Ascii) {
         super(config, logger, theme);
@@ -66,10 +68,11 @@ export default class Terminal extends BaseTerminal {
         }
     }
 
-    public async ask(text: string, options?: AskOptions): Promise<string | string[]> {
+    public async ask(text: string, options?: TAskOptions): Promise<string | string[]> {
         this.asking = true;
         this.answerCount = 0;
         this.timedOutResponse = false;
+        this.timeoutMs = options?.timeout || 60000;
         this.logger
             .pushPrompt(options?.password ? this.passwordPrompt : this.questionPrompt)
             .notice(this.theme.formatQuestion(text))
@@ -235,7 +238,7 @@ export default class Terminal extends BaseTerminal {
             this.mute();
         }
         const input = await new Promise<string>((resolve) => {
-            this.responseTimeout = setTimeout(() => resolve(this.endGetResponse(null, password, true)), 60000);
+            this.responseTimeout = setTimeout(() => resolve(this.endGetResponse(null, password, true)), this.timeoutMs);
             this.responseAbort = () => resolve(this.endGetResponse(null, password, true));
             this.interface.once("line", (answer: string) => resolve(this.endGetResponse(answer, password)));
         });

@@ -2,7 +2,7 @@ import semver from "semver";
 import { RequestInit } from "node-fetch";
 
 import { TExecOptions, TExecReturnValue, TFetchReturnValue, TSubShell } from "../script/ScriptHost.js";
-import { AskOptions } from "../cli/Terminal.js";
+import { TAskOptions } from "../cli/Terminal.js";
 import TaskHost, { TaskHostErrorCodes } from "./TaskHost.js";
 import Task from "./Task.js";
 import Logger from "../cli/Logger.js";
@@ -10,12 +10,12 @@ import FalkorError from "../error/FalkorError.js";
 import Ascii from "../util/Ascii.js";
 import Theme from "../util/Theme.js";
 
-export type TaskOptions = {
+export type TTaskSetupOptions = {
     theme: Theme;
     logger: Logger;
     ascii: Ascii;
     shell: TSubShell;
-    ask: (text: string, options?: AskOptions) => Promise<string | string[]>;
+    ask: (text: string, options?: TAskOptions) => Promise<string | string[]>;
     exec: (command: string, options?: TExecOptions) => Promise<TExecReturnValue>;
     fetchText: (url: string, options?: RequestInit) => Promise<TFetchReturnValue<string>>;
     fetchJson: <T = any>(url: string, options?: RequestInit) => Promise<TFetchReturnValue<T>>;
@@ -56,12 +56,12 @@ export default class TaskRunner extends TaskHost {
     protected readonly prefix = this.theme.formatBrand("FALKOR:");
     protected readonly versionRe = /version\s*([^\s]+)/;
     protected readonly collection: { [id: string]: Task } = {};
-    protected readonly taskOptions: TaskOptions = {
+    protected readonly taskOptions: TTaskSetupOptions = {
         theme: this.theme,
         logger: this.logger,
         ascii: this.ascii,
         shell: this.shell,
-        ask: (text: string, options?: AskOptions) => this.terminal.ask(text, options),
+        ask: (text: string, options?: TAskOptions) => this.terminal.ask(text, options),
         exec: (command: string, options?: TExecOptions) => this.exec(command, options),
         subtask: (title: string) => this.startSubtask(title),
         fetchText: (url: string, options: RequestInit = null) => this.fetchText(url, options),
@@ -82,7 +82,10 @@ export default class TaskRunner extends TaskHost {
         Object.freeze(this.taskOptions);
     }
 
-    /** @throws FalkorError: TaskRunnerErrorCodes.DUPLICATE_ID */
+    /**
+     * @throws FalkorError: TaskRunnerErrorCodes.RESERVED_ID
+     * @throws FalkorError: TaskRunnerErrorCodes.DUPLICATE_ID
+     */
     public register(task: Task): void {
         if (this.reservedTaskNames.includes(task.id)) {
             throw new FalkorError(TaskRunnerErrorCodes.RESERVED_ID, `TaskRunner: reserved id '${task.id}'`);

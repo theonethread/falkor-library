@@ -1,8 +1,8 @@
 import { RequestInit } from "node-fetch";
 
-import { TaskOptions, TLazyCommandDependencies } from "./TaskRunner.js";
+import { TTaskSetupOptions, TLazyCommandDependencies } from "./TaskRunner.js";
 import { TSubShell, TExecOptions, TExecReturnValue, TFetchReturnValue } from "../script/ScriptHost.js";
-import { AskOptions } from "../cli/Terminal.js";
+import { TAskOptions } from "../cli/Terminal.js";
 import Theme from "../util/Theme.js";
 import Logger from "../cli/Logger.js";
 import falkorUtil from "../util/Util.js";
@@ -13,7 +13,7 @@ export default abstract class Task {
     protected logger: Logger;
     protected ascii: Ascii;
     protected shell: TSubShell;
-    protected ask: (text: string, options: AskOptions) => Promise<string | string[]>;
+    protected ask: (text: string, options: TAskOptions) => Promise<string | string[]>;
     protected exec: (command: string, options?: TExecOptions) => Promise<TExecReturnValue>;
     protected fetchText: (url: string, options?: RequestInit) => Promise<TFetchReturnValue<string>>;
     protected fetchJson: <T = any>(url: string, options?: RequestInit) => Promise<TFetchReturnValue<T>>;
@@ -42,7 +42,7 @@ export default abstract class Task {
         return this.taskId;
     }
 
-    public setup(opts: TaskOptions): void {
+    public setup(opts: TTaskSetupOptions): void {
         this.theme = opts.theme;
         this.logger = opts.logger;
         this.ascii = opts.ascii;
