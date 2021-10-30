@@ -5,7 +5,8 @@ import Theme from "../util/Theme.js";
 
 export const enum TerminalAnimationErrorCodes {
     FRAME_COUNT = "terminal-animation-frame-count",
-    INVALID_FRAME = "terminal-animation-invalid-frame"
+    INVALID_FRAME = "terminal-animation-invalid-frame",
+    PADDING = "terminal-animation-invalid-padding"
 }
 
 export default class TerminalAnimation {
@@ -45,9 +46,16 @@ export default class TerminalAnimation {
         this.empty = " ".repeat(this.printLength);
     }
 
+    /** @throws FalkorError: TerminalAnimationErrorCodes.INVALID_PADDING */
     public async start(padding: number = 0): Promise<void> {
+        if (padding < 0) {
+            throw new FalkorError(
+                TerminalAnimationErrorCodes.PADDING,
+                "TerminalAnimation: started with negative padding"
+            );
+        }
         this.currentFrame = 0;
-        this.extraPadding = padding;
+        this.extraPadding = padding === 0 ? 0 : padding - 1;
         this.printFrame();
         this.loop();
     }

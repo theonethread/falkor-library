@@ -19,6 +19,7 @@ export default class BaseTerminal {
         historySize: 0,
         tabSize: 2
     });
+    protected aborted: boolean = false;
     protected cursorShown: boolean = true;
     protected muted: boolean = false;
     protected streaming: boolean = false;
@@ -44,6 +45,7 @@ export default class BaseTerminal {
     }
 
     public abort(): void {
+        this.aborted = true;
         if (this.streaming) {
             this.endStream();
             this.logger.error(`aborted stream (SIGINT)`).popPrompt();
@@ -181,12 +183,12 @@ export default class BaseTerminal {
 
     //#region HELPERS
 
-    protected close(): void {
+    protected close(final: boolean = true): void {
         if (this.interface) {
             this.interface.close();
             this.interface = null;
         }
-        if (!this.cursorShown) {
+        if (final && !this.cursorShown) {
             this.showCursor();
         }
     }

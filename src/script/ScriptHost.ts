@@ -93,6 +93,7 @@ export default class ScriptHost {
         sed: shell.sed,
         grep: shell.grep
     };
+    protected aborted = false;
 
     constructor(answerBuffer: string[]) {
         this.config = new Config();

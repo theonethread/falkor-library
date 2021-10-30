@@ -1,3 +1,5 @@
+import prettyTime from "pretty-time";
+
 class Util {
     private readonly tokenizer =
         /((?:"[^"\\]*(?:\\[\S\s][^"\\]*)*"|'[^'\\]*(?:\\[\S\s][^'\\]*)*'|\/[^\/\\]*(?:\\[\S\s][^\/\\]*)*\/[gimy]*(?=\s|$)|(?:\\\s|\S))+)(?=\s|$)/g;
@@ -22,6 +24,10 @@ class Util {
 
     public tokenize(input: string): string[] {
         return input.match(this.tokenizer);
+    }
+
+    public prettyTime(time: number | number[] | string[]): string {
+        return prettyTime(time);
     }
 }
 

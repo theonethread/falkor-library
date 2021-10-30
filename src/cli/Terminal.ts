@@ -62,13 +62,16 @@ export default class Terminal extends BaseTerminal {
         super.abort();
         if (this.asking) {
             this.responseAbort();
-            this.hideCursor();
+            //this.close(false);
             this.logger.error(`aborted input (SIGINT)`).popPrompt();
             this.asking = false;
         }
     }
 
     public async ask(text: string, options?: TAskOptions): Promise<string | string[]> {
+        if (this.aborted) {
+            return null;
+        }
         this.asking = true;
         this.answerCount = 0;
         this.timedOutResponse = false;
@@ -239,7 +242,10 @@ export default class Terminal extends BaseTerminal {
         }
         const input = await new Promise<string>((resolve) => {
             this.responseTimeout = setTimeout(() => resolve(this.endGetResponse(null, password, true)), this.timeoutMs);
-            this.responseAbort = () => resolve(this.endGetResponse(null, password, true));
+            this.responseAbort = () => {
+                this.endGetResponse(null, password, true);
+                resolve(new Promise(() => void 0));
+            };
             this.interface.once("line", (answer: string) => resolve(this.endGetResponse(answer, password)));
         });
         return input;
@@ -269,6 +275,9 @@ export default class Terminal extends BaseTerminal {
         listDescriptions: string[] | boolean = false,
         multi: boolean
     ): Promise<string | string[]> {
+        if (this.aborted) {
+            return null;
+        }
         this.answerCount++;
         if (this.timedOutResponse) {
             this.logger.error(`answer timeout`).popPrompt();
@@ -344,6 +353,11 @@ export default class Terminal extends BaseTerminal {
     //#region LISTENERS
 
     protected internalListKeypressListener(key: Key): void {
+        if (this.aborted) {
+            process.stdin.removeAllListeners("keypress");
+            process.stdout.removeAllListeners("resize");
+            return;
+        }
         switch (key.name) {
             case "left":
                 this.interactiveStart();
@@ -374,6 +388,11 @@ export default class Terminal extends BaseTerminal {
     }
 
     protected internalListResizeListener(): void {
+        if (this.aborted) {
+            process.stdin.removeAllListeners("keypress");
+            process.stdout.removeAllListeners("resize");
+            return;
+        }
         if (this.selection !== null) {
             this.renderListHighlight(this.selectionList.length - this.selection, this.selectionList[this.selection]);
         }

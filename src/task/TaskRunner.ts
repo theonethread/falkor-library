@@ -114,7 +114,7 @@ export default class TaskRunner extends TaskHost {
             await this.checkDependencies(dependencies);
             await this.runSequence();
         } catch (error) {
-            await this.handleError(error);
+            this.handleError(error);
         }
     }
 
@@ -215,27 +215,26 @@ export default class TaskRunner extends TaskHost {
         this.endSubtaskSuccess("done");
     }
 
-    protected handleError(error: Error): void {
+    protected handleError(error: Error, soft: boolean = false): Error | FalkorError {
         this.logger.emptyPrompt(1);
         const isAbort = error instanceof FalkorError && error.code === TaskHostErrorCodes.SUBTASK_ABORT;
         if (isAbort) {
             this.logAbort();
-            this.logger.pushPrompt();
             if (this.currentTask?.cancel) {
+                this.logger.pushPrompt();
                 this.currentTask.cancel(isAbort);
+                this.logger.popPrompt();
             }
-            this.logger.popPrompt();
-            this.endSubtaskAbort("sequence aborted", true);
+            return this.endSubtaskAbort("sequence aborted", true, soft, error);
         } else {
             this.logError(error);
-            this.logger.pushPrompt();
             if (this.currentTask?.cancel) {
+                this.logger.pushPrompt();
                 this.currentTask.cancel(isAbort);
+                this.logger.popPrompt();
             }
-            this.logger.popPrompt();
-            this.endSubtaskError("sequence failed", true);
+            return this.endSubtaskError("sequence failed", true, soft, error);
         }
-        process.exit(1);
     }
 
     protected logAbort(): void {
