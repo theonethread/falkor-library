@@ -1,6 +1,7 @@
 import { posix as path } from "path";
 import shell from "shelljs";
 import figlet from "figlet";
+import stripJsonComments from "strip-json-comments";
 
 import falkorUtil from "../util/Util.js";
 import { LogLevel } from "../cli/Logger.js";
@@ -54,6 +55,7 @@ export type TConfig = {
 };
 
 export default class Config {
+    protected readonly opsFileNames = [".falkorrc", ".ops.json", ".ops.jsonc", "falkor.json", "falkor.jsonc"];
     protected readonly config: TConfig = {
         terminal: {
             ansi: true,
@@ -99,7 +101,7 @@ export default class Config {
             failure: "#715"
         }
     };
-    protected opsFile = ".ops.json";
+    protected opsFile: string;
     protected themeFile: string = null;
     protected externalConfig: any;
 
@@ -124,11 +126,10 @@ export default class Config {
     }
 
     constructor() {
-        if (shell.test("-f", this.opsFile)) {
-            this.externalConfig = JSON.parse(shell.cat(this.opsFile));
+        this.opsFile = this.opsFileNames.find((f) => shell.test("-f", f)) || null;
+        if (this.opsFile) {
+            this.externalConfig = JSON.parse(stripJsonComments(shell.cat(this.opsFile).toString()));
             this.assign(this.config, this.externalConfig);
-        } else {
-            this.opsFile = null;
         }
 
         falkorUtil.deepFreeze(this.config);

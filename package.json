@@ -63,6 +63,7 @@
     "chalk": "4.1.2",
     "strip-ansi": "7.0.1",
     "ansi-escapes": "5.0.0",
+    "strip-json-comments": "4.0.0",
     "figlet": "1.5.2",
     "semver": "7.3.5",
     "pretty-time": "1.1.0",
