@@ -31,12 +31,12 @@ export const enum ThemeFormatKey {
 export default class Theme {
     protected readonly severityAssociations = ["debug", "notice", "info", "warning", "error", "fatal"];
     protected readonly severityErrorAssociations = [
-        "debug-error",
-        "notice-error",
-        "info-error",
-        "warning-error",
-        "error-error",
-        "fatal-error"
+        "streamDebug",
+        "streamNotice",
+        "streamInfo",
+        "streamWarning",
+        "streamError",
+        "streamFatal"
     ];
 
     public readonly tagger: ThemeTagger;

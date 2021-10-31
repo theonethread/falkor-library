@@ -30,12 +30,12 @@ export type TThemeConfig = {
     warning?: string;
     error?: string;
     fatal?: string;
-    "debug-error"?: string;
-    "notice-error"?: string;
-    "info-error"?: string;
-    "warning-error"?: string;
-    "error-error"?: string;
-    "fatal-error"?: string;
+    streamDebug?: string;
+    streamNotice?: string;
+    streamInfo?: string;
+    streamWarning?: string;
+    streamError?: string;
+    streamFatal?: string;
     trace?: string;
     path?: string;
     command?: string;
@@ -86,12 +86,12 @@ export default class Config {
             command: "#a0a",
             bullet: "#a83",
             // stream
-            "debug-error": "#07a",
-            "notice-error": "#888",
-            "info-error": "#999",
-            "warning-error": "#a00",
-            "error-error": "#f77",
-            "fatal-error": "#f00",
+            streamDebug: "#07a",
+            streamNotice: "#888",
+            streamInfo: "#999",
+            streamWarning: "#a00",
+            streamError: "#f77",
+            streamFatal: "#f00",
             // interaction
             question: "#fb0",
             selection: "#045",

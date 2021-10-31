@@ -205,8 +205,8 @@ export default class TaskRunner extends TaskHost {
             const config =
                 (this.config.external?.taskConfigurations && this.config.external.taskConfigurations[id]) || null;
             this.logger
-                .debug(`${this.theme.formatSeverityError(0, "ARGV:")} ${JSON.stringify(argv)}`)
-                .debug(`${this.theme.formatSeverityError(0, "CONFIG:")} ${JSON.stringify(config)}`);
+                .debug(`${this.debugPrompt} ${this.theme.formatBullet("ARGV:")} ${JSON.stringify(argv)}`)
+                .debug(`${this.debugPrompt} ${this.theme.formatBullet("CONFIG:")} ${JSON.stringify(config)}`);
             process.once("SIGINT", this.sigintListener);
             await this.currentTask.run(argv, config);
             process.removeListener("SIGINT", this.sigintListener);
