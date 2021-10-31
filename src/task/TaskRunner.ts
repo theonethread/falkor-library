@@ -202,8 +202,7 @@ export default class TaskRunner extends TaskHost {
             this.currentTask = this.collection[id];
             this.startSubtask(this.currentTask.id);
             const argv = (this.currentSequenceArguments && this.currentSequenceArguments[id]) || null;
-            const config =
-                (this.config.external?.taskConfigurations && this.config.external.taskConfigurations[id]) || null;
+            const config = (this.config.external?.tasks && this.config.external.tasks[id]) || null;
             this.logger
                 .debug(`${this.debugPrompt} ${this.theme.formatBullet("ARGV:")} ${JSON.stringify(argv)}`)
                 .debug(`${this.debugPrompt} ${this.theme.formatBullet("CONFIG:")} ${JSON.stringify(config)}`);
