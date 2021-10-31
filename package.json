@@ -48,7 +48,7 @@
     "prepublishOnly": "npm ci && npm run release && npm run doc"
   },
   "devDependencies": {
-    "@types/node": "14.17.29",
+    "@types/node": "14.17.32",
     "@types/pretty-time": "1.1.1",
     "@types/shelljs": "0.8.9",
     "@types/figlet": "1.5.4",
