@@ -1,8 +1,7 @@
 import prettyTime from "pretty-time";
 
 class Util {
-    private readonly tokenizer =
-        /((?:"[^"\\]*(?:\\[\S\s][^"\\]*)*"|'[^'\\]*(?:\\[\S\s][^'\\]*)*'|\/[^\/\\]*(?:\\[\S\s][^\/\\]*)*\/[gimy]*(?=\s|$)|(?:\\\s|\S))+)(?=\s|$)/g;
+    private readonly tokenizer = /(?:"(?:[^"\\]|\\[\S\s])*?"|'(?:[^'\\]|\\[\S\s])*?'|(?:\\\s|\S)+)(?=\s|$)/g;
 
     public deepFreeze(object: any): void {
         for (const name of Object.getOwnPropertyNames(object)) {
