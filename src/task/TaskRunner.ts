@@ -2,7 +2,7 @@ import semver from "semver";
 import { RequestInit } from "node-fetch";
 
 import { TExecOptions, TExecReturnValue, TFetchReturnValue, TSubShell } from "../script/ScriptHost.js";
-import { AskOptions } from "../cli/Terminal.js";
+import { TAskOptions } from "../cli/Terminal.js";
 import TaskHost, { TaskHostErrorCodes } from "./TaskHost.js";
 import Task from "./Task.js";
 import Logger from "../cli/Logger.js";
@@ -10,12 +10,12 @@ import FalkorError from "../error/FalkorError.js";
 import Ascii from "../util/Ascii.js";
 import Theme from "../util/Theme.js";
 
-export type TaskOptions = {
+export type TTaskSetupOptions = {
     theme: Theme;
     logger: Logger;
     ascii: Ascii;
     shell: TSubShell;
-    ask: (text: string, options?: AskOptions) => Promise<string | string[]>;
+    ask: (text: string, options?: TAskOptions) => Promise<string | string[]>;
     exec: (command: string, options?: TExecOptions) => Promise<TExecReturnValue>;
     fetchText: (url: string, options?: RequestInit) => Promise<TFetchReturnValue<string>>;
     fetchJson: <T = any>(url: string, options?: RequestInit) => Promise<TFetchReturnValue<T>>;
@@ -46,20 +46,22 @@ export type TLazyCommandDependencies = {
 };
 
 export const enum TaskRunnerErrorCodes {
+    RESERVED_ID = "runner-id-reserved",
     DUPLICATE_ID = "runner-id-duplicate",
     INVALID_ID = "runner-id-invalid"
 }
 
 export default class TaskRunner extends TaskHost {
+    protected readonly reservedTaskNames = ["exit"];
     protected readonly prefix = this.theme.formatBrand("FALKOR:");
     protected readonly versionRe = /version\s*([^\s]+)/;
     protected readonly collection: { [id: string]: Task } = {};
-    protected readonly taskOptions: TaskOptions = {
+    protected readonly taskOptions: TTaskSetupOptions = {
         theme: this.theme,
         logger: this.logger,
         ascii: this.ascii,
         shell: this.shell,
-        ask: (text: string, options?: AskOptions) => this.terminal.ask(text, options),
+        ask: (text: string, options?: TAskOptions) => this.terminal.ask(text, options),
         exec: (command: string, options?: TExecOptions) => this.exec(command, options),
         subtask: (title: string) => this.startSubtask(title),
         fetchText: (url: string, options: RequestInit = null) => this.fetchText(url, options),
@@ -71,6 +73,7 @@ export default class TaskRunner extends TaskHost {
     // NOTE: throwing from the listener will not be caught by async try-catch
     protected readonly sigintListener = () => this.handleError(this.endSubtaskAbort("received 'SIGINT'", false, true));
     protected currentSequence: string[];
+    protected currentSequenceArguments: { [key: string]: { [key: string]: any } };
     protected currentIndex: number = null;
     protected currentTask: Task = null;
 
@@ -79,8 +82,14 @@ export default class TaskRunner extends TaskHost {
         Object.freeze(this.taskOptions);
     }
 
-    /** @throws FalkorError: TaskRunnerErrorCodes.DUPLICATE_ID */
+    /**
+     * @throws FalkorError: TaskRunnerErrorCodes.RESERVED_ID
+     * @throws FalkorError: TaskRunnerErrorCodes.DUPLICATE_ID
+     */
     public register(task: Task): void {
+        if (this.reservedTaskNames.includes(task.id)) {
+            throw new FalkorError(TaskRunnerErrorCodes.RESERVED_ID, `TaskRunner: reserved id '${task.id}'`);
+        }
         if (this.collection[task.id]) {
             throw new FalkorError(TaskRunnerErrorCodes.DUPLICATE_ID, `TaskRunner: duplicate id '${task.id}'`);
         }
@@ -88,7 +97,10 @@ export default class TaskRunner extends TaskHost {
         task.setup(this.taskOptions);
     }
 
-    public async run(idArr?: string | string[]): Promise<void> {
+    public async run(
+        idArr?: string | string[],
+        argumentVector?: { [key: string]: { [key: string]: any } }
+    ): Promise<void> {
         const dependencies: TCommandDependencies<semver.SemVer> = {};
         if (!idArr) {
             idArr = Object.keys(this.collection);
@@ -96,12 +108,13 @@ export default class TaskRunner extends TaskHost {
             idArr = [idArr];
         }
         this.currentSequence = idArr;
+        this.currentSequenceArguments = argumentVector;
         try {
             this.mergeDependencies(dependencies);
             await this.checkDependencies(dependencies);
             await this.runSequence();
         } catch (error) {
-            await this.handleError(error);
+            this.handleError(error);
         }
     }
 
@@ -157,7 +170,7 @@ export default class TaskRunner extends TaskHost {
         if (keys.length) {
             this.startSubtask(`${this.prefix} Dependency Check`);
             for (const dep of keys) {
-                this.logger.info(`[i] checking '${this.theme.formatCommand(dep)}'`).pushPrompt();
+                this.logger.info(`${this.infoPrompt} checking '${this.theme.formatCommand(dep)}'`).pushPrompt();
                 const d = dependencies[dep];
                 const ret = await this.exec(d.command);
                 if (!ret.success) {
@@ -188,38 +201,40 @@ export default class TaskRunner extends TaskHost {
             this.currentIndex++;
             this.currentTask = this.collection[id];
             this.startSubtask(this.currentTask.id);
+            const argv = (this.currentSequenceArguments && this.currentSequenceArguments[id]) || null;
+            this.logger.debug(`${this.theme.formatSeverityError(0, "ARGV:")} ${JSON.stringify(argv)}`);
             process.once("SIGINT", this.sigintListener);
-            await this.currentTask.run();
+            await this.currentTask.run(argv);
             process.removeListener("SIGINT", this.sigintListener);
             this.endSubtaskSuccess("finished task");
         }
         this.currentIndex = null;
         this.currentTask = null;
         this.currentSequence = null;
+        this.currentSequenceArguments = null;
         this.endSubtaskSuccess("done");
     }
 
-    protected handleError(error: Error): void {
+    protected handleError(error: Error, soft: boolean = false): Error | FalkorError {
         this.logger.emptyPrompt(1);
         const isAbort = error instanceof FalkorError && error.code === TaskHostErrorCodes.SUBTASK_ABORT;
         if (isAbort) {
             this.logAbort();
-            this.logger.pushPrompt();
             if (this.currentTask?.cancel) {
+                this.logger.pushPrompt();
                 this.currentTask.cancel(isAbort);
+                this.logger.popPrompt();
             }
-            this.logger.popPrompt();
-            this.endSubtaskAbort("sequence aborted", true);
+            return this.endSubtaskAbort("sequence aborted", true, soft, error);
         } else {
             this.logError(error);
-            this.logger.pushPrompt();
             if (this.currentTask?.cancel) {
+                this.logger.pushPrompt();
                 this.currentTask.cancel(isAbort);
+                this.logger.popPrompt();
             }
-            this.logger.popPrompt();
-            this.endSubtaskError("sequence failed", true);
+            return this.endSubtaskError("sequence failed", true, soft, error);
         }
-        process.exit(1);
     }
 
     protected logAbort(): void {

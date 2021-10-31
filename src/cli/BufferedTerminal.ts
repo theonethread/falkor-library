@@ -1,4 +1,4 @@
-import Terminal, { AskOptions } from "./Terminal.js";
+import Terminal, { TAskOptions } from "./Terminal.js";
 import Logger from "../cli/Logger.js";
 import Theme from "../util/Theme.js";
 import Ascii, { ListType } from "../util/Ascii.js";
@@ -15,7 +15,7 @@ export default class BufferedTerminal extends Terminal {
         super(config, logger, theme, ascii);
     }
 
-    public async ask(text: string, options?: AskOptions): Promise<string | string[]> {
+    public async ask(text: string, options?: TAskOptions): Promise<string | string[]> {
         const buffered = this.buffer?.shift();
         if (buffered) {
             this.logger

@@ -1,6 +1,6 @@
 {
   "name": "@falkor/falkor-library",
-  "version": "1.0.0-beta.4",
+  "version": "1.0.0-beta.5",
   "description": "Shared operations library of the Falkor Framework",
   "author": {
     "name": "Barnabas Bucsy",
@@ -13,8 +13,9 @@
     }
   ],
   "license": "MIT",
-  "repository": "github:theonethread/falkor-library",
   "homepage": "https://falkor.world/",
+  "repository": "github:theonethread/falkor-library",
+  "bugs": "https://github.com/theonethread/falkor-library/issues",
   "funding": {
     "type": "individual",
     "url": "https://www.linkedin.com/in/barnabas-bucsy"
@@ -31,6 +32,11 @@
   "files": [
     ".dist"
   ],
+  "os": [
+    "darwin",
+    "linux",
+    "win32"
+  ],
   "engines": {
     "node": ">=14",
     "npm": ">=6"
@@ -42,7 +48,7 @@
     "prepublishOnly": "npm ci && npm run release && npm run doc"
   },
   "devDependencies": {
-    "@types/node": "14.17.29",
+    "@types/node": "14.17.32",
     "@types/pretty-time": "1.1.1",
     "@types/shelljs": "0.8.9",
     "@types/figlet": "1.5.4",
@@ -51,7 +57,7 @@
     "typedoc": "0.22.7",
     "typedoc-plugin-rename-defaults": "0.4.0",
     "typedoc-plugin-missing-exports": "0.22.3",
-    "@falkor/falkor-bundler": "1.1.5"
+    "@falkor/falkor-bundler": "1.1.6"
   },
   "dependencies": {
     "chalk": "4.1.2",
@@ -63,7 +69,7 @@
     "shelljs": "0.8.4",
     "node-fetch": "3.0.0"
   },
-  "peerDependencies": {
+  "optionalDependencies": {
     "@types/shelljs": "0.8.9",
     "@types/figlet": "1.5.4",
     "@types/semver": "7.3.9"

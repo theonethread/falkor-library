@@ -13,12 +13,13 @@ const enum InteractiveMoveDirection {
     NEXT
 }
 
-export type AskOptions = {
+export type TAskOptions = {
     password?: boolean;
     answers?: string[];
     descriptions?: string[];
     list?: boolean;
     multi?: boolean;
+    timeout?: number;
 };
 
 export default class Terminal extends BaseTerminal {
@@ -41,6 +42,7 @@ export default class Terminal extends BaseTerminal {
     protected responseTimeout: NodeJS.Timeout;
     protected responseAbort: () => void;
     protected timedOutResponse: boolean;
+    protected timeoutMs: number;
 
     constructor(config: TTerminalConfig, protected logger: Logger, protected theme: Theme, protected ascii: Ascii) {
         super(config, logger, theme);
@@ -60,16 +62,20 @@ export default class Terminal extends BaseTerminal {
         super.abort();
         if (this.asking) {
             this.responseAbort();
-            this.hideCursor();
+            this.close(false);
             this.logger.error(`aborted input (SIGINT)`).popPrompt();
             this.asking = false;
         }
     }
 
-    public async ask(text: string, options?: AskOptions): Promise<string | string[]> {
+    public async ask(text: string, options?: TAskOptions): Promise<string | string[]> {
+        if (this.aborted) {
+            return null;
+        }
         this.asking = true;
         this.answerCount = 0;
         this.timedOutResponse = false;
+        this.timeoutMs = options?.timeout || 60000;
         this.logger
             .pushPrompt(options?.password ? this.passwordPrompt : this.questionPrompt)
             .notice(this.theme.formatQuestion(text))
@@ -235,8 +241,11 @@ export default class Terminal extends BaseTerminal {
             this.mute();
         }
         const input = await new Promise<string>((resolve) => {
-            this.responseTimeout = setTimeout(() => resolve(this.endGetResponse(null, password, true)), 60000);
-            this.responseAbort = () => resolve(this.endGetResponse(null, password, true));
+            this.responseTimeout = setTimeout(() => resolve(this.endGetResponse(null, password, true)), this.timeoutMs);
+            this.responseAbort = () => {
+                this.endGetResponse(null, password, true);
+                resolve(new Promise(() => void 0));
+            };
             this.interface.once("line", (answer: string) => resolve(this.endGetResponse(answer, password)));
         });
         return input;
@@ -266,6 +275,9 @@ export default class Terminal extends BaseTerminal {
         listDescriptions: string[] | boolean = false,
         multi: boolean
     ): Promise<string | string[]> {
+        if (this.aborted) {
+            return null;
+        }
         this.answerCount++;
         if (this.timedOutResponse) {
             this.logger.error(`answer timeout`).popPrompt();
@@ -341,6 +353,11 @@ export default class Terminal extends BaseTerminal {
     //#region LISTENERS
 
     protected internalListKeypressListener(key: Key): void {
+        if (this.aborted) {
+            process.stdin.removeAllListeners("keypress");
+            process.stdout.removeAllListeners("resize");
+            return;
+        }
         switch (key.name) {
             case "left":
                 this.interactiveStart();
@@ -371,6 +388,11 @@ export default class Terminal extends BaseTerminal {
     }
 
     protected internalListResizeListener(): void {
+        if (this.aborted) {
+            process.stdin.removeAllListeners("keypress");
+            process.stdout.removeAllListeners("resize");
+            return;
+        }
         if (this.selection !== null) {
             this.renderListHighlight(this.selectionList.length - this.selection, this.selectionList[this.selection]);
         }

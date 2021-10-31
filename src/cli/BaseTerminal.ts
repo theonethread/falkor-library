@@ -19,6 +19,7 @@ export default class BaseTerminal {
         historySize: 0,
         tabSize: 2
     });
+    protected aborted: boolean = false;
     protected cursorShown: boolean = true;
     protected muted: boolean = false;
     protected streaming: boolean = false;
@@ -44,6 +45,7 @@ export default class BaseTerminal {
     }
 
     public abort(): void {
+        this.aborted = true;
         if (this.streaming) {
             this.endStream();
             this.logger.error(`aborted stream (SIGINT)`).popPrompt();
@@ -94,14 +96,14 @@ export default class BaseTerminal {
         this.streamLevel = level;
         this.streamBuffer = "";
         const prefix = this.logger.log(level, [this.streamPrefix], true);
-        this.streamPad = prefix === null ? null : stripAnsi(prefix).length;
+        this.streamPad = prefix ? stripAnsi(prefix).length : null;
         this.logger.startStream();
         if (!this.ansi) {
             return (chunk: string, isError?: boolean) => {
                 this.streamBuffer += isError ? this.theme.formatSeverityError(level, chunk) : chunk;
             };
         } else if (this.streamPad === null) {
-            this.terminalAnimation?.start();
+            this.terminalAnimation?.start(this.logger.getCurrentPad());
             return (chunk: string, isError?: boolean) => {
                 this.streamBuffer += isError ? this.theme.formatSeverityError(level, chunk) : chunk;
             };
@@ -181,12 +183,12 @@ export default class BaseTerminal {
 
     //#region HELPERS
 
-    protected close(): void {
+    protected close(final: boolean = true): void {
         if (this.interface) {
             this.interface.close();
             this.interface = null;
         }
-        if (!this.cursorShown) {
+        if (final && !this.cursorShown) {
             this.showCursor();
         }
     }
