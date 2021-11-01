@@ -25,6 +25,12 @@ See the following projects consuming `falkor-library`:
 * [`@falkor/falkor-commander`](https://www.npmjs.com/package/@falkor/falkor-commander "Visit")
 * [`falkor-plugin-example`](https://github.com/theonethread/falkor-plugin-example "Visit")
 
+### **Configuration**
+
+The `falkor-library` looks for shared configurations in the Current Working Directory from where the application consuming it was executed (files could be named `.falkorrc`, `.ops.json`, `.ops.jsonc`, `falkor.json`, or `falkor.jsonc` - whichever is found first).
+
+To see all available settings, and also example `falkor-commander` and plugin customizations check out the big [`.ops.jsonc`](https://github.com/theonethread/falkor-plugin-example/blob/develop/.ops.jsonc "Open") file provided as example in [`falkor-plugin-example`](https://github.com/theonethread/falkor-plugin-example "Visit").
+
 ## **Further Development**
 
 The project uses the [`@falkor/falkor-bundler`](https://www.npmjs.com/package/@falkor/falkor-bundler "Visit") module to compile sources. One can use the commands in the root directory:
