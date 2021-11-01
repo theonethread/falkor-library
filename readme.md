@@ -68,7 +68,7 @@ Automatic builds are achieved via GitHub actions, CI will make nightly builds of
 
 There is also a manually triggered workflow, that deploys generated documentation to [GitHub Pages](https://theonethread.github.io/falkor-library-doc "Visit").
 
-#### **Security**
+### **Security**
 
 The project uses [CodeQL](https://codeql.github.com "Visit") and [Snyk](https://snyk.io "Visit") to ensure standard security.
 
