@@ -202,9 +202,12 @@ export default class TaskRunner extends TaskHost {
             this.currentTask = this.collection[id];
             this.startSubtask(this.currentTask.id);
             const argv = (this.currentSequenceArguments && this.currentSequenceArguments[id]) || null;
-            this.logger.debug(`${this.theme.formatSeverityError(0, "ARGV:")} ${JSON.stringify(argv)}`);
+            const config = (this.config.external?.tasks && this.config.external.tasks[id]) || null;
+            this.logger
+                .debug(`${this.debugPrompt} ${this.theme.formatBullet("ARGV:")} ${JSON.stringify(argv)}`)
+                .debug(`${this.debugPrompt} ${this.theme.formatBullet("CONFIG:")} ${JSON.stringify(config)}`);
             process.once("SIGINT", this.sigintListener);
-            await this.currentTask.run(argv);
+            await this.currentTask.run(argv, config);
             process.removeListener("SIGINT", this.sigintListener);
             this.endSubtaskSuccess("finished task");
         }

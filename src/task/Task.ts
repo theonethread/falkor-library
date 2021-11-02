@@ -57,7 +57,7 @@ export default abstract class Task {
         this.error = opts.error;
     }
 
-    public abstract run(argv?: { [key: string]: any }): Promise<void>;
+    public abstract run(argv?: { [key: string]: any }, config?: any): Promise<void>;
 
     public abstract cancel?(isAbort: boolean): void;
 }

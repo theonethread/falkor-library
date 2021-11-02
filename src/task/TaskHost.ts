@@ -2,7 +2,6 @@ import ScriptHost from "../script/ScriptHost.js";
 import FalkorError from "../error/FalkorError.js";
 import Brand from "../util/Brand.js";
 import falkorUtil from "../util/Util.js";
-import { LogLevel } from "../cli/Logger.js";
 
 export const enum TaskHostErrorCodes {
     SUBTASK_ABORT = "host-subtask-abort",
@@ -36,10 +35,8 @@ export default class TaskHost extends ScriptHost {
             .info(this.theme.formatBrand(this.brand.title))
             .popPrompt()
             .pushPrompt(this.debugPrompt)
-            .debug(`${this.theme.formatSeverityError(LogLevel.DEBUG, "CONFIG:")} ${JSON.stringify(this.config)}`)
-            .debug(
-                `${this.theme.formatSeverityError(LogLevel.DEBUG, "ANSWER BUFFER:")} ${JSON.stringify(answerBuffer)}`
-            )
+            .debug(`${this.theme.formatBullet("CONFIG:")} ${JSON.stringify(this.config)}`)
+            .debug(`${this.theme.formatBullet("ANSWER BUFFER:")} ${JSON.stringify(answerBuffer)}`)
             .popPrompt();
     }
 

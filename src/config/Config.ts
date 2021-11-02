@@ -1,6 +1,7 @@
 import { posix as path } from "path";
 import shell from "shelljs";
 import figlet from "figlet";
+import stripJsonComments from "strip-json-comments";
 
 import falkorUtil from "../util/Util.js";
 import { LogLevel } from "../cli/Logger.js";
@@ -29,12 +30,12 @@ export type TThemeConfig = {
     warning?: string;
     error?: string;
     fatal?: string;
-    "debug-error"?: string;
-    "notice-error"?: string;
-    "info-error"?: string;
-    "warning-error"?: string;
-    "error-error"?: string;
-    "fatal-error"?: string;
+    streamDebug?: string;
+    streamNotice?: string;
+    streamInfo?: string;
+    streamWarning?: string;
+    streamError?: string;
+    streamFatal?: string;
     trace?: string;
     path?: string;
     command?: string;
@@ -54,6 +55,7 @@ export type TConfig = {
 };
 
 export default class Config {
+    protected readonly opsFileNames = [".falkorrc", ".ops.json", ".ops.jsonc", "falkor.json", "falkor.jsonc"];
     protected readonly config: TConfig = {
         terminal: {
             ansi: true,
@@ -84,12 +86,12 @@ export default class Config {
             command: "#a0a",
             bullet: "#a83",
             // stream
-            "debug-error": "#07a",
-            "notice-error": "#888",
-            "info-error": "#999",
-            "warning-error": "#a00",
-            "error-error": "#f77",
-            "fatal-error": "#f00",
+            streamDebug: "#07a",
+            streamNotice: "#888",
+            streamInfo: "#999",
+            streamWarning: "#a00",
+            streamError: "#f77",
+            streamFatal: "#f00",
             // interaction
             question: "#fb0",
             selection: "#045",
@@ -99,7 +101,7 @@ export default class Config {
             failure: "#715"
         }
     };
-    protected opsFile = ".ops.json";
+    protected opsFile: string;
     protected themeFile: string = null;
     protected externalConfig: any;
 
@@ -124,11 +126,10 @@ export default class Config {
     }
 
     constructor() {
-        if (shell.test("-f", this.opsFile)) {
-            this.externalConfig = JSON.parse(shell.cat(this.opsFile));
+        this.opsFile = this.opsFileNames.find((f) => shell.test("-f", f)) || null;
+        if (this.opsFile) {
+            this.externalConfig = JSON.parse(stripJsonComments(shell.cat(this.opsFile).toString()));
             this.assign(this.config, this.externalConfig);
-        } else {
-            this.opsFile = null;
         }
 
         falkorUtil.deepFreeze(this.config);

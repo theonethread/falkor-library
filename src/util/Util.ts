@@ -21,7 +21,7 @@ class Util {
         return ret;
     }
 
-    public tokenize(input: string): string[] {
+    public cliTokenize(input: string): string[] {
         return input.match(this.tokenizer);
     }
 

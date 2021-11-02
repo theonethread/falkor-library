@@ -25,9 +25,15 @@ See the following projects consuming `falkor-library`:
 * [`@falkor/falkor-commander`](https://www.npmjs.com/package/@falkor/falkor-commander "Visit")
 * [`falkor-plugin-example`](https://github.com/theonethread/falkor-plugin-example "Visit")
 
+### **Configuration**
+
+The `falkor-library` looks for shared configurations in the Current Working Directory from where the application consuming it was executed (files could be named `.falkorrc`, `.ops.json`, `.ops.jsonc`, `falkor.json`, or `falkor.jsonc` - whichever is found first).
+
+To see all available settings, and also example `falkor-commander` and plugin customizations check out the big [`.ops.jsonc`](https://github.com/theonethread/falkor-plugin-example/blob/develop/.ops.jsonc "Open") file provided as example in [`falkor-plugin-example`](https://github.com/theonethread/falkor-plugin-example "Visit").
+
 ## **Further Development**
 
-The project uses the [`@falkor/falkor-bundler`](https://www.npmjs.com/package/@falkor/falkor-bundler "Visit") module to compile sources. One can use the commands in the root directory:
+The project uses the [`@falkor/falkor-bundler`](https://www.npmjs.com/package/@falkor/falkor-bundler "Visit") module to compile sources. One can use the commands in the root directory after cloning the repository:
 
 ```
 $ npm install
@@ -68,17 +74,21 @@ Automatic builds are achieved via GitHub actions, CI will make nightly builds of
 
 There is also a manually triggered workflow, that deploys generated documentation to [GitHub Pages](https://theonethread.github.io/falkor-library-doc "Visit").
 
-#### **Security**
+### **Security**
 
 The project uses [CodeQL](https://codeql.github.com "Visit") and [Snyk](https://snyk.io "Visit") to ensure standard security.
 
-> _The **Falkor Framework** supports a healthy and ubiquitous Internet Immune System enabled by security research, reporting, and disclosure. Check out our [Vulnerability Disclosure Policy](https://github.com/theonethread/falkor-bundler/security/policy "Open") - based on [disclose.io](https://disclose.io "Visit")'s best practices._
+> _The **Falkor Framework** supports a healthy and ubiquitous Internet Immune System enabled by security research, reporting, and disclosure. Check out our [Vulnerability Disclosure Policy](https://github.com/theonethread/falkor-library/security/policy "Open") - based on [disclose.io](https://disclose.io "Visit")'s best practices._
 
-### **Open Source**
+### **Free and Open Source**
 
 The latest sources can always be found on [GitHub](https://github.com/theonethread/falkor-library "Visit").
 
-### **License**
+#### **Getting Involved**
+
+We believe - and we hope you do too - that learning how to code, how to think, and how to contribute to free- and open source software can empower the next generation of coders and creators. We **value** first time contributors just the same as rock stars of the OSS world, so if you're interested to get involved, just head over to our [Contribution Guidelines](https://github.com/theonethread/.github/blob/master/.github/contributing.md "Open") for a quick heads-up!
+
+#### **License**
 
 [MIT](https://github.com/theonethread/falkor-library/blob/master/license.txt "Open")
 

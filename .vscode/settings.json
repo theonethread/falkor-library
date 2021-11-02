@@ -9,6 +9,7 @@
     "npmjs",
     "typedoc",
     "sigint",
-    "snyk"
+    "snyk",
+    "falkorrc"
   ]
 }

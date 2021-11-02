@@ -1,6 +1,6 @@
 {
   "name": "@falkor/falkor-library",
-  "version": "1.0.0-beta.5",
+  "version": "1.0.0",
   "description": "Shared operations library of the Falkor Framework",
   "author": {
     "name": "Barnabas Bucsy",
@@ -16,10 +16,16 @@
   "homepage": "https://falkor.world/",
   "repository": "github:theonethread/falkor-library",
   "bugs": "https://github.com/theonethread/falkor-library/issues",
-  "funding": {
-    "type": "individual",
-    "url": "https://www.linkedin.com/in/barnabas-bucsy"
-  },
+  "funding": [
+    {
+      "type": "ko-fi",
+      "url": "https://ko-fi.com/falkor_framework"
+    },
+    {
+      "type": "individual",
+      "url": "https://www.linkedin.com/in/barnabas-bucsy"
+    }
+  ],
   "keywords": [
     "falkor",
     "operations",
@@ -57,12 +63,13 @@
     "typedoc": "0.22.7",
     "typedoc-plugin-rename-defaults": "0.4.0",
     "typedoc-plugin-missing-exports": "0.22.3",
-    "@falkor/falkor-bundler": "1.1.6"
+    "@falkor/falkor-bundler": "1.1.7"
   },
   "dependencies": {
     "chalk": "4.1.2",
     "strip-ansi": "7.0.1",
     "ansi-escapes": "5.0.0",
+    "strip-json-comments": "4.0.0",
     "figlet": "1.5.2",
     "semver": "7.3.5",
     "pretty-time": "1.1.0",
