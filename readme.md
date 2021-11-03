@@ -16,10 +16,10 @@ The `falkor-library` project is a collection of devops tools written in strict E
 
 ## **Usage**
 
-See the following projects consuming `falkor-library`:
+See the following projects consuming the `falkor-library`:
 
-* [`@falkor/falkor-commander`](https://www.npmjs.com/package/@falkor/falkor-commander "Visit")
-* [`falkor-plugin-example`](https://github.com/theonethread/falkor-plugin-example "Visit")
+* [`@falkor/falkor-commander`](https://www.npmjs.com/package/@falkor/falkor-commander "Visit"): plugin based task runner / -sequencer
+* [`falkor-plugin-example`](https://github.com/theonethread/falkor-plugin-example/tree/master "Visit"): example `falkor-commander` plugin to demonstrate framework capabilities
 
 ### **Configuration**
 
