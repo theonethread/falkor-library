@@ -10,7 +10,7 @@ export const enum LoggerErrorCodes {
     INVALID_STREAM = "logger-invalid-stream"
 }
 
-export const enum LogLevel {
+export enum LogLevel {
     DEBUG,
     NOTICE,
     INFO,
