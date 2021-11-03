@@ -12,6 +12,7 @@ import Theme from "../util/Theme.js";
 
 export type TExecOptions = {
     noError?: RegExp[];
+    logLevel?: LogLevel;
 } & shell.ExecOptions;
 
 export type TExecReturnValue = {
@@ -115,7 +116,7 @@ export default class ScriptHost {
                 `(cwd: ${this.theme.formatPath(options?.cwd ? path.join(this.cwd, options.cwd.toString()) : this.cwd)})`
             )
             .clearCurrentPrompt();
-        const streamFn = this.terminal.startStream(LogLevel.DEBUG);
+        const streamFn = this.terminal.startStream(options?.logLevel || LogLevel.DEBUG);
         return new Promise((resolve) => {
             const child = shell.exec(
                 command,

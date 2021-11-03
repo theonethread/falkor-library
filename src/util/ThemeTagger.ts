@@ -15,32 +15,32 @@ export default class ThemeTagger {
     //#region SEVERITY
 
     /** Template literal tag for 'Theme::formatDebug' */
-    public dbg(strArr: TemplateStringsArray, ...expr: string[]): string {
+    public dbg(strArr: TemplateStringsArray | string, ...expr: string[]): string {
         return this.formatExpression(this.theme.formatDebug, strArr, expr);
     }
 
     /** Template literal tag for 'Theme::formatNotice' */
-    public ntc(strArr: TemplateStringsArray, ...expr: string[]): string {
+    public ntc(strArr: TemplateStringsArray | string, ...expr: string[]): string {
         return this.formatExpression(this.theme.formatNotice, strArr, expr);
     }
 
     /** Template literal tag for 'Theme::formatInfo' */
-    public inf(strArr: TemplateStringsArray, ...expr: string[]): string {
+    public inf(strArr: TemplateStringsArray | string, ...expr: string[]): string {
         return this.formatExpression(this.theme.formatInfo, strArr, expr);
     }
 
     /** Template literal tag for 'Theme::formatWarning' */
-    public wrn(strArr: TemplateStringsArray, ...expr: string[]): string {
+    public wrn(strArr: TemplateStringsArray | string, ...expr: string[]): string {
         return this.formatExpression(this.theme.formatWarning, strArr, expr);
     }
 
     /** Template literal tag for 'Theme::formatError' */
-    public err(strArr: TemplateStringsArray, ...expr: string[]): string {
+    public err(strArr: TemplateStringsArray | string, ...expr: string[]): string {
         return this.formatExpression(this.theme.formatError, strArr, expr);
     }
 
     /** Template literal tag for 'Theme::formatFatal' */
-    public ftl(strArr: TemplateStringsArray, ...expr: string[]): string {
+    public ftl(strArr: TemplateStringsArray | string, ...expr: string[]): string {
         return this.formatExpression(this.theme.formatFatal, strArr, expr);
     }
 
@@ -49,22 +49,22 @@ export default class ThemeTagger {
     //#region INLINE
 
     /** Template literal tag for 'Theme::formatTrace' */
-    public trc(strArr: TemplateStringsArray, ...expr: string[]): string {
+    public trc(strArr: TemplateStringsArray | string, ...expr: string[]): string {
         return this.formatExpression(this.theme.formatTrace, strArr, expr);
     }
 
     /** Template literal tag for 'Theme::formatPath' */
-    public pth(strArr: TemplateStringsArray, ...expr: string[]): string {
+    public pth(strArr: TemplateStringsArray | string, ...expr: string[]): string {
         return this.formatExpression(this.theme.formatPath, strArr, expr);
     }
 
     /** Template literal tag for 'Theme::formatCommand' */
-    public cmd(strArr: TemplateStringsArray, ...expr: string[]): string {
+    public cmd(strArr: TemplateStringsArray | string, ...expr: string[]): string {
         return this.formatExpression(this.theme.formatCommand, strArr, expr);
     }
 
     /** Template literal tag for 'Theme::formatBullet' */
-    public blt(strArr: TemplateStringsArray, ...expr: string[]): string {
+    public blt(strArr: TemplateStringsArray | string, ...expr: string[]): string {
         return this.formatExpression(this.theme.formatBullet, strArr, expr);
     }
 
@@ -73,12 +73,12 @@ export default class ThemeTagger {
     //#region INTERACTION
 
     /** Template literal tag for 'Theme::formatQuestion' */
-    public qst(strArr: TemplateStringsArray, ...expr: string[]): string {
+    public qst(strArr: TemplateStringsArray | string, ...expr: string[]): string {
         return this.formatExpression(this.theme.formatQuestion, strArr, expr);
     }
 
     /** Template literal tag for 'Theme::formatSelection' */
-    public sel(strArr: TemplateStringsArray, ...expr: string[]): string {
+    public sel(strArr: TemplateStringsArray | string, ...expr: string[]): string {
         return this.formatExpression(this.theme.formatSelection, strArr, expr);
     }
 
@@ -87,17 +87,17 @@ export default class ThemeTagger {
     //#region TASK
 
     /** Template literal tag for 'Theme::formatTask' */
-    public tsk(strArr: TemplateStringsArray, ...expr: string[]): string {
+    public tsk(strArr: TemplateStringsArray | string, ...expr: string[]): string {
         return this.formatExpression(this.theme.formatTask, strArr, expr);
     }
 
     /** Template literal tag for 'Theme::formatSuccess' */
-    public scs(strArr: TemplateStringsArray, ...expr: string[]): string {
+    public scs(strArr: TemplateStringsArray | string, ...expr: string[]): string {
         return this.formatExpression(this.theme.formatSuccess, strArr, expr);
     }
 
     /** Template literal tag for 'Theme::formatFailure' */
-    public flr(strArr: TemplateStringsArray, ...expr: string[]): string {
+    public flr(strArr: TemplateStringsArray | string, ...expr: string[]): string {
         return this.formatExpression(this.theme.formatFailure, strArr, expr);
     }
 
@@ -105,7 +105,14 @@ export default class ThemeTagger {
 
     //#region HELPERS
 
-    protected formatExpression(func: (str: string) => string, strArr: TemplateStringsArray, expr: string[]): string {
+    protected formatExpression(
+        func: (str: string) => string,
+        strArr: TemplateStringsArray | string,
+        expr: string[]
+    ): string {
+        if (!Array.isArray(strArr)) {
+            return func.call(this.theme, strArr);
+        }
         return strArr.map((s, i) => func.call(this.theme, s + (expr[i] || ""))).join("");
     }
 
