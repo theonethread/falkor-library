@@ -12,11 +12,7 @@
 [![Snyk Vulnerabilities](https://img.shields.io/snyk/vulnerabilities/github/theonethread/falkor-library "Snyk")](https://snyk.io/test/github/theonethread/falkor-library "Visit") &nbsp;
 [![License](https://img.shields.io/npm/l/@falkor/falkor-library "MIT")](https://github.com/theonethread/falkor-library/blob/master/license.txt "Visit")
 
-```javascript
-// Work In Progress
-```
-
-The `falkor-library` project is a collection of devops terminal tools written in strict ES6 TypeScript to be used with the **Falkor Framework**.
+The `falkor-library` project is a collection of devops tools written in strict ES6 TypeScript to be used with the **Falkor Framework**.
 
 ## **Usage**
 
