@@ -230,7 +230,7 @@ export default class TaskRunner extends TaskHost {
             }
             return this.endSubtaskAbort("sequence aborted", true, soft, error);
         } else {
-            this.logError(error);
+            this.logError(error, soft);
             if (this.currentTask?.cancel) {
                 this.logger.pushPrompt();
                 this.currentTask.cancel(isAbort);
@@ -244,9 +244,10 @@ export default class TaskRunner extends TaskHost {
         this.logger.fatal(`${this.abortPrompt} aborted ${this.theme.formatInfo(`(${this.breadcrumbs})`)}`);
     }
 
-    protected logError(error: Error): void {
-        this.logger
-            .fatal(`${this.panicPrompt} failed ${this.theme.formatInfo(`(${this.breadcrumbs})`)}`)
-            .debug(`${this.debugPrompt} ${error.stack ? error.stack : error.name + ": " + error.message}`);
+    protected logError(error: Error, soft: boolean): void {
+        this.logger.fatal(`${this.panicPrompt} failed ${this.theme.formatInfo(`(${this.breadcrumbs})`)}`);
+        if (!soft) {
+            this.logger.debug(`${this.debugPrompt} ${error.stack ? error.stack : error.name + ": " + error.message}`);
+        }
     }
 }
