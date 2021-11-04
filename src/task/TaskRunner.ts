@@ -241,20 +241,12 @@ export default class TaskRunner extends TaskHost {
     }
 
     protected logAbort(): void {
-        this.logger.fatal(
-            `${this.abortPrompt} aborted ${this.theme.formatInfo(
-                `(${this.breadcrumbs}${this.currentTask ? this.breadcrumbJoiner + this.currentTask.id : ""})`
-            )}`
-        );
+        this.logger.fatal(`${this.abortPrompt} aborted ${this.theme.formatInfo(`(${this.breadcrumbs})`)}`);
     }
 
     protected logError(error: Error): void {
         this.logger
-            .fatal(
-                `${this.panicPrompt} failed ${this.theme.formatInfo(
-                    `(${this.breadcrumbs}${this.currentTask ? this.breadcrumbJoiner + this.currentTask.id : ""})`
-                )}`
-            )
+            .fatal(`${this.panicPrompt} failed ${this.theme.formatInfo(`(${this.breadcrumbs})`)}`)
             .debug(`${this.debugPrompt} ${error.stack ? error.stack : error.name + ": " + error.message}`);
     }
 }

@@ -20,6 +20,7 @@ export type TAskOptions = {
     list?: boolean;
     multi?: boolean;
     timeout?: number;
+    allowNone?: boolean;
 };
 
 export default class Terminal extends BaseTerminal {
@@ -87,7 +88,12 @@ export default class Terminal extends BaseTerminal {
                 response = await this.getResponse(`${text}\n`, true);
             } else if (options.answers) {
                 if (options.multi) {
-                    response = await this.getMultiAnswer(text, options.answers, options.descriptions || options.list);
+                    response = await this.getMultiAnswer(
+                        text,
+                        options.answers,
+                        options.descriptions || options.list,
+                        options.allowNone
+                    );
                 } else {
                     response = await this.getAnswer(text, options.answers, options.descriptions || options.list);
                 }
@@ -152,28 +158,34 @@ export default class Terminal extends BaseTerminal {
     protected async getMultiAnswer(
         text: string,
         answers: string[],
-        listDescriptions: string[] | boolean = false
+        listDescriptions: string[] | boolean = false,
+        allowNone: boolean = false
     ): Promise<string[]> {
-        const type = listDescriptions ? ListType.MULTI_NUMERIC : null;
+        const listType = listDescriptions ? ListType.MULTI_NUMERIC : null;
         const response = listDescriptions
             ? await this.getListResponse(
                   text,
                   answers,
                   typeof listDescriptions === "boolean" ? null : listDescriptions,
-                  type
+                  listType
               )
             : await this.getResponse(`${text} (${answers.join("/")}) `);
-        const answer = this.validateMultiAnswer(response, answers, type);
+        const answer = this.validateMultiAnswer(response, answers, listType, allowNone);
         if (answer) {
             return answer;
         }
         return this.failResponse(response, text, answers, listDescriptions, true) as Promise<string[]>;
     }
 
-    protected validateMultiAnswer(response: string, answers: string[], type: ListType): string[] {
+    protected validateMultiAnswer(
+        response: string,
+        answers: string[],
+        listType: ListType,
+        allowNone: boolean
+    ): string[] {
         if (response) {
             response = response.trim();
-            if (type === ListType.MULTI_NUMERIC && this.multipleNumberRe.test(response)) {
+            if (listType === ListType.MULTI_NUMERIC && this.multipleNumberRe.test(response)) {
                 const indices = response
                     .split(this.multipleSplitRe)
                     .map((str) => parseInt(str) - 1)
@@ -192,6 +204,8 @@ export default class Terminal extends BaseTerminal {
                 .map((c) => answers.indexOf(c))
                 .sort()
                 .map((i) => answers[i]);
+        } else if (response === "" && allowNone) {
+            return [];
         }
         return null;
     }
@@ -273,7 +287,8 @@ export default class Terminal extends BaseTerminal {
         text: string,
         answers: string[],
         listDescriptions: string[] | boolean = false,
-        multi: boolean
+        multi: boolean = false,
+        allowNone: boolean = false
     ): Promise<string | string[]> {
         if (this.aborted) {
             return null;
@@ -292,7 +307,7 @@ export default class Terminal extends BaseTerminal {
                         `wrong answer '${response}', please provide list of available ones (or indices)`
                     )
                 );
-                return this.getMultiAnswer(text, answers, listDescriptions);
+                return this.getMultiAnswer(text, answers, listDescriptions, allowNone);
             } else {
                 shell.echo(
                     this.theme.formatFailure(

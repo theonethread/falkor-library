@@ -128,8 +128,13 @@ export default class Config {
     constructor() {
         this.opsFile = this.opsFileNames.find((f) => shell.test("-f", f)) || null;
         if (this.opsFile) {
-            this.externalConfig = JSON.parse(stripJsonComments(shell.cat(this.opsFile).toString()));
-            this.assign(this.config, this.externalConfig);
+            try {
+                this.externalConfig = JSON.parse(stripJsonComments(shell.cat(this.opsFile).toString()));
+                this.assign(this.config, this.externalConfig);
+            } catch (e) {
+                console.error(`External config error, check your ops-file (${path.join(process.cwd(), this.opsFile)})`);
+                this.opsFile = null;
+            }
         }
 
         falkorUtil.deepFreeze(this.config);
