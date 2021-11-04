@@ -174,7 +174,7 @@ export default class Terminal extends BaseTerminal {
         if (answer) {
             return answer;
         }
-        return this.failResponse(response, text, answers, listDescriptions, true) as Promise<string[]>;
+        return this.failResponse(response, text, answers, listDescriptions, true, allowNone) as Promise<string[]>;
     }
 
     protected validateMultiAnswer(
