@@ -52,6 +52,7 @@ export default class TaskHost extends ScriptHost {
     }
 
     protected endSubtaskSuccess(text: string): void {
+        this.checkInvalidSubtaskClosing();
         this.logger
             .info(
                 `${this.theme.formatTask(this.subtaskTitles.pop())} ${this.theme.formatSuccess(
@@ -76,6 +77,8 @@ export default class TaskHost extends ScriptHost {
             this.subtaskTitles.length = this.finalTaskCount;
             this.times.length = this.finalTimeCount;
             this.logger.emptyPrompt(this.finalTaskCount);
+        } else {
+            this.checkInvalidSubtaskClosing();
         }
         this.logger
             .warning(
@@ -109,6 +112,8 @@ export default class TaskHost extends ScriptHost {
             this.subtaskTitles.length = this.finalTaskCount;
             this.times.length = this.finalTimeCount;
             this.logger.emptyPrompt(this.finalPromptCount);
+        } else {
+            this.checkInvalidSubtaskClosing();
         }
         this.logger
             .error(
@@ -130,9 +135,12 @@ export default class TaskHost extends ScriptHost {
     }
 
     protected calcElapsedTime(): number {
-        if (!this.times.length) {
+        return Number(process.hrtime.bigint() - this.times.pop());
+    }
+
+    protected checkInvalidSubtaskClosing() {
+        if (this.subtaskTitles.length <= this.finalTaskCount || this.times.length <= this.finalTimeCount) {
             throw new FalkorError(TaskHostErrorCodes.INVALID_SUBTASK_CLOSING, "TaskHost: invalid subtask closing");
         }
-        return Number(process.hrtime.bigint() - this.times.pop());
     }
 }
