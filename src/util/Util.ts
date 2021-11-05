@@ -14,6 +14,10 @@ class Util {
     }
 
     public getClassChain(item: any): string[] {
+        const t = typeof item;
+        if (t !== "object") {
+            return [t];
+        }
         const ret: string[] = [];
         while ((item = Object.getPrototypeOf(item))) {
             ret.push(item.constructor.name);
