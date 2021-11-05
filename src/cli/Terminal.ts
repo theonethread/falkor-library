@@ -1,3 +1,4 @@
+import process from "process";
 import { Key } from "readline";
 import shell from "shelljs";
 import ansiEscapes from "ansi-escapes";

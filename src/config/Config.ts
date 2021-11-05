@@ -1,3 +1,4 @@
+import process from "process";
 import { posix as path } from "path";
 import shell from "shelljs";
 import figlet from "figlet";

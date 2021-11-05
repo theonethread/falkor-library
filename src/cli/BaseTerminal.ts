@@ -1,3 +1,4 @@
+import process from "process";
 import readline from "readline";
 import stripAnsi from "strip-ansi";
 import shell from "shelljs";

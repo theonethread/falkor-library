@@ -1,3 +1,4 @@
+import process from "process";
 import ScriptHost from "../script/ScriptHost.js";
 import FalkorError from "../error/FalkorError.js";
 import Brand from "../util/Brand.js";

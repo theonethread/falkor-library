@@ -1,3 +1,4 @@
+import process from "process";
 import semver from "semver";
 import { RequestInit } from "node-fetch";
 
