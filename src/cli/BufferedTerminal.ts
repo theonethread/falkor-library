@@ -32,7 +32,8 @@ export default class BufferedTerminal extends Terminal {
                         response = this.validateMultiAnswer(
                             buffered,
                             options.answers,
-                            options.descriptions || options.list ? ListType.MULTI_NUMERIC : null
+                            options.descriptions || options.list ? ListType.MULTI_NUMERIC : null,
+                            options.allowNone
                         );
                     } else {
                         response = this.validateAnswer(
