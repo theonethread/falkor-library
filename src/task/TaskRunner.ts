@@ -221,7 +221,6 @@ export default class TaskRunner extends TaskHost {
     }
 
     protected handleError(error: Error, soft: boolean = false): Error | FalkorError {
-        this.logger.emptyPrompt(1);
         const isAbort = error instanceof FalkorError && error.code === TaskHostErrorCodes.SUBTASK_ABORT;
         if (isAbort) {
             this.logAbort();

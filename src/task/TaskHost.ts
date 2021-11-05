@@ -6,7 +6,8 @@ import falkorUtil from "../util/Util.js";
 
 export const enum TaskHostErrorCodes {
     SUBTASK_ABORT = "host-subtask-abort",
-    SUBTASK_ERROR = "host-subtask-error"
+    SUBTASK_ERROR = "host-subtask-error",
+    INVALID_SUBTASK_CLOSING = "host-subtask-closing"
 }
 
 export default class TaskHost extends ScriptHost {
@@ -22,6 +23,9 @@ export default class TaskHost extends ScriptHost {
     protected readonly brand: Brand;
     protected readonly times: bigint[] = [];
     protected readonly subtaskTitles: string[] = [];
+    protected finalTaskCount = 1;
+    protected finalTimeCount = 1;
+    protected finalPromptCount = 1;
 
     public get breadcrumbs(): string {
         return this.subtaskTitles.join(this.breadcrumbJoiner);
@@ -69,9 +73,9 @@ export default class TaskHost extends ScriptHost {
         }
         if (final) {
             this.aborted = true;
-            this.subtaskTitles.length = 1;
-            this.times.length = 1;
-            this.logger.emptyPrompt(1);
+            this.subtaskTitles.length = this.finalTaskCount;
+            this.times.length = this.finalTimeCount;
+            this.logger.emptyPrompt(this.finalTaskCount);
         }
         this.logger
             .warning(
@@ -102,8 +106,9 @@ export default class TaskHost extends ScriptHost {
         }
         if (final) {
             this.aborted = true;
-            this.subtaskTitles.length = 1;
-            this.times.length = 1;
+            this.subtaskTitles.length = this.finalTaskCount;
+            this.times.length = this.finalTimeCount;
+            this.logger.emptyPrompt(this.finalPromptCount);
         }
         this.logger
             .error(
@@ -121,8 +126,13 @@ export default class TaskHost extends ScriptHost {
     }
 
     protected formatElapsedTime(): string {
-        return this.theme.formatTrace(
-            `in ${falkorUtil.prettyTime(Number(process.hrtime.bigint() - this.times.pop()))}`
-        );
+        return this.theme.formatTrace(`in ${falkorUtil.prettyTime(this.calcElapsedTime())}`);
+    }
+
+    protected calcElapsedTime(): number {
+        if (!this.times.length) {
+            throw new FalkorError(TaskHostErrorCodes.INVALID_SUBTASK_CLOSING, "TaskHost: invalid subtask closing");
+        }
+        return Number(process.hrtime.bigint() - this.times.pop());
     }
 }
