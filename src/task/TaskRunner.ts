@@ -71,7 +71,8 @@ export default class TaskRunner extends TaskHost {
         error: (text: string) => this.endSubtaskError(text)
     };
     // NOTE: throwing from the listener will not be caught by async try-catch
-    protected readonly sigintListener = () => this.handleError(this.endSubtaskAbort("received 'SIGINT'", false, true));
+    protected readonly sigintListener = () =>
+        this.handleError(this.endSubtaskAbort("received 'SIGINT'", false, true), true);
     protected currentSequence: string[];
     protected currentSequenceArguments: { [key: string]: { [key: string]: any } };
     protected currentIndex: number = null;
