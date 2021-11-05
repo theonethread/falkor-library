@@ -20,7 +20,7 @@ export default class TaskHost extends ScriptHost {
     protected readonly errorPrompt = "[!]";
     protected readonly breadcrumbJoiner = " > ";
     protected readonly brand: Brand;
-    protected readonly times: [number, number][] = [];
+    protected readonly times: bigint[] = [];
     protected readonly subtaskTitles: string[] = [];
 
     public get breadcrumbs(): string {
@@ -44,7 +44,7 @@ export default class TaskHost extends ScriptHost {
     protected startSubtask(title: string): void {
         this.subtaskTitles.push(title);
         this.logger.info(`${this.theme.formatTask(`${this.taskPrompt} ${title}`)} starting`).pushPrompt();
-        this.times.push(process.hrtime());
+        this.times.push(process.hrtime.bigint());
     }
 
     protected endSubtaskSuccess(text: string): void {
@@ -52,7 +52,7 @@ export default class TaskHost extends ScriptHost {
             .info(
                 `${this.theme.formatTask(this.subtaskTitles.pop())} ${this.theme.formatSuccess(
                     "succeeded"
-                )} (${text} ${this.theme.formatTrace(`in ${falkorUtil.prettyTime(process.hrtime(this.times.pop()))}`)})`
+                )} (${text} ${this.formatElapsedTime()})`
             )
             .popPrompt();
     }
@@ -76,9 +76,7 @@ export default class TaskHost extends ScriptHost {
         this.logger
             .warning(
                 `${this.theme.formatTask(this.subtaskTitles.pop())} subtask abort ${this.theme.formatInfo(
-                    `(${text} ${this.theme.formatTrace(
-                        `in ${falkorUtil.prettyTime(process.hrtime(this.times.pop()))}`
-                    )})`
+                    `(${text} ${this.formatElapsedTime()})`
                 )}`
             )
             .popPrompt();
@@ -110,9 +108,7 @@ export default class TaskHost extends ScriptHost {
         this.logger
             .error(
                 `${this.theme.formatTask(this.subtaskTitles.pop())} subtask error ${this.theme.formatInfo(
-                    `(${text} ${this.theme.formatTrace(
-                        `in ${falkorUtil.prettyTime(process.hrtime(this.times.pop()))}`
-                    )})`
+                    `(${text} ${this.formatElapsedTime()})`
                 )}`
             )
             .popPrompt();
@@ -122,5 +118,11 @@ export default class TaskHost extends ScriptHost {
         }
         this.logger.debug(`${this.debugPrompt} throwing '${this.theme.formatFatal(TaskHostErrorCodes.SUBTASK_ERROR)}'`);
         throw e;
+    }
+
+    protected formatElapsedTime(): string {
+        return this.theme.formatTrace(
+            `in ${falkorUtil.prettyTime(Number(process.hrtime.bigint() - this.times.pop()))}`
+        );
     }
 }
