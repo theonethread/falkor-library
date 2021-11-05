@@ -67,9 +67,18 @@ export default class TaskRunner extends TaskHost {
         subtask: (title: string) => this.startSubtask(title),
         fetchText: (url: string, options: RequestInit = null) => this.fetchText(url, options),
         fetchJson: <T = any>(url: string, options: RequestInit = null) => this.fetchJson<T>(url, options),
-        success: (text: string) => this.endSubtaskSuccess(text),
-        abort: (text: string) => this.endSubtaskAbort(text),
-        error: (text: string) => this.endSubtaskError(text)
+        success: (text: string) => {
+            this.checkInvalidSubtaskClosing();
+            this.endSubtaskSuccess(text);
+        },
+        abort: (text: string) => {
+            this.checkInvalidSubtaskClosing();
+            this.endSubtaskAbort(text);
+        },
+        error: (text: string) => {
+            this.checkInvalidSubtaskClosing();
+            this.endSubtaskError(text);
+        }
     };
     // NOTE: throwing from the listener will not be caught by async try-catch
     protected readonly sigintListener = () =>

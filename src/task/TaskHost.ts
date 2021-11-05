@@ -52,7 +52,6 @@ export default class TaskHost extends ScriptHost {
     }
 
     protected endSubtaskSuccess(text: string): void {
-        this.checkInvalidSubtaskClosing();
         this.logger
             .info(
                 `${this.theme.formatTask(this.subtaskTitles.pop())} ${this.theme.formatSuccess(
@@ -77,8 +76,6 @@ export default class TaskHost extends ScriptHost {
             this.subtaskTitles.length = this.finalTaskCount;
             this.times.length = this.finalTimeCount;
             this.logger.emptyPrompt(this.finalTaskCount);
-        } else {
-            this.checkInvalidSubtaskClosing();
         }
         this.logger
             .warning(
@@ -112,8 +109,6 @@ export default class TaskHost extends ScriptHost {
             this.subtaskTitles.length = this.finalTaskCount;
             this.times.length = this.finalTimeCount;
             this.logger.emptyPrompt(this.finalPromptCount);
-        } else {
-            this.checkInvalidSubtaskClosing();
         }
         this.logger
             .error(
