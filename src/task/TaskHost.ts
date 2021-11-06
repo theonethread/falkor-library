@@ -135,6 +135,7 @@ export default class TaskHost extends ScriptHost {
         return process.hrtime.bigint() - this.times.pop();
     }
 
+    /** @throws FalkorError: TaskHostErrorCodes.INVALID_SUBTASK_CLOSING */
     protected checkInvalidSubtaskClosing() {
         if (this.subtaskTitles.length <= this.finalTaskCount || this.times.length <= this.finalTimeCount) {
             throw new FalkorError(

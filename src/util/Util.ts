@@ -27,11 +27,12 @@ export class Util {
         return this.moduleParameters.params;
     }
 
+    /** @throws Error: "Tried to re-initialize Util instance!" */
     public init(fileUrl: string): void {
         if (this.initialized) {
             throw new Error("Tried to re-initialize Util instance!");
         }
-        // index.js always lives in the .dist directory, we walk upwards from there assuming global install:
+        // index.js gets generated to the .dist directory, we walk upwards from there assuming global install:
         // <root>/node_modules/@falkor/falkor-library/.dist
         this.moduleParameters = this.getModuleParameters(fileUrl, "../../../..");
         this._cwd = this.toPosixPath(process.cwd());
