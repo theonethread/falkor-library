@@ -7,7 +7,7 @@ import { TAskOptions } from "../cli/Terminal.js";
 import TaskHost, { TaskHostErrorCodes } from "./TaskHost.js";
 import Task from "./Task.js";
 import Logger from "../cli/Logger.js";
-import FalkorError from "../error/FalkorError.js";
+import FalkorError, { ExitCode } from "../error/FalkorError.js";
 import Ascii from "../util/Ascii.js";
 import Theme from "../util/Theme.js";
 
@@ -99,10 +99,20 @@ export default class TaskRunner extends TaskHost {
      */
     public register(task: Task): void {
         if (this.reservedTaskNames.includes(task.id)) {
-            throw new FalkorError(TaskRunnerErrorCodes.RESERVED_ID, `TaskRunner: reserved id '${task.id}'`);
+            throw new FalkorError(
+                TaskRunnerErrorCodes.RESERVED_ID,
+                `reserved id '${task.id}'`,
+                ExitCode.VALIDATION,
+                "TaskRunner"
+            );
         }
         if (this.collection[task.id]) {
-            throw new FalkorError(TaskRunnerErrorCodes.DUPLICATE_ID, `TaskRunner: duplicate id '${task.id}'`);
+            throw new FalkorError(
+                TaskRunnerErrorCodes.DUPLICATE_ID,
+                `duplicate id '${task.id}'`,
+                ExitCode.VALIDATION,
+                "TaskRunner"
+            );
         }
         this.collection[task.id] = task;
         task.setup(this.taskOptions);
@@ -135,7 +145,12 @@ export default class TaskRunner extends TaskHost {
         this.currentSequence.forEach((id: string) => {
             const task = this.collection[id];
             if (!task) {
-                throw new FalkorError(TaskRunnerErrorCodes.INVALID_ID, `TaskRunner: invalid task id '${id}'`);
+                throw new FalkorError(
+                    TaskRunnerErrorCodes.INVALID_ID,
+                    `invalid task id '${id}'`,
+                    ExitCode.VALIDATION,
+                    "TaskRunner"
+                );
             }
             if (task.dependencies) {
                 for (const key of Object.keys(task.dependencies)) {

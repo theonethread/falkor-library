@@ -2,7 +2,7 @@ import shell from "shelljs";
 import stripAnsi from "strip-ansi";
 
 import { TLoggerConfig } from "../config/Config.js";
-import FalkorError from "../error/FalkorError.js";
+import FalkorError, { ExitCode } from "../error/FalkorError.js";
 import Theme from "../util/Theme.js";
 
 export const enum LoggerErrorCodes {
@@ -117,7 +117,12 @@ export default class Logger {
     /** @throws FalkorError: LoggerErrorCodes.LOG_MIDSTREAM */
     public log(level: LogLevel, message: any[], streaming: boolean = false): string {
         if (!streaming && this.inStream) {
-            throw new FalkorError(LoggerErrorCodes.LOG_MIDSTREAM, "Logger: tried to log midstream");
+            throw new FalkorError(
+                LoggerErrorCodes.LOG_MIDSTREAM,
+                "tried to log midstream",
+                ExitCode.VALIDATION,
+                "Logger"
+            );
         }
         if (level < this.level) {
             return null;

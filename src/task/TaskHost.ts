@@ -1,6 +1,6 @@
 import process from "process";
 import ScriptHost from "../script/ScriptHost.js";
-import FalkorError from "../error/FalkorError.js";
+import FalkorError, { ExitCode } from "../error/FalkorError.js";
 import Brand from "../util/Brand.js";
 import falkorUtil from "../util/Util.js";
 
@@ -84,7 +84,8 @@ export default class TaskHost extends ScriptHost {
                 )}`
             )
             .popPrompt();
-        const e = error || new FalkorError(TaskHostErrorCodes.SUBTASK_ABORT, "TaskHost: subtask abort");
+        const e =
+            error || new FalkorError(TaskHostErrorCodes.SUBTASK_ABORT, "subtask abort", ExitCode.ABORT, "TaskHost");
         if (soft) {
             return e;
         }
@@ -117,7 +118,8 @@ export default class TaskHost extends ScriptHost {
                 )}`
             )
             .popPrompt();
-        const e = error || new FalkorError(TaskHostErrorCodes.SUBTASK_ERROR, "TaskHost: subtask error");
+        const e =
+            error || new FalkorError(TaskHostErrorCodes.SUBTASK_ERROR, "subtask error", ExitCode.GENERAL, "TaskHost");
         if (soft) {
             return e;
         }
@@ -135,7 +137,12 @@ export default class TaskHost extends ScriptHost {
 
     protected checkInvalidSubtaskClosing() {
         if (this.subtaskTitles.length <= this.finalTaskCount || this.times.length <= this.finalTimeCount) {
-            throw new FalkorError(TaskHostErrorCodes.INVALID_SUBTASK_CLOSING, "TaskHost: invalid subtask closing");
+            throw new FalkorError(
+                TaskHostErrorCodes.INVALID_SUBTASK_CLOSING,
+                "invalid subtask closing",
+                ExitCode.VALIDATION,
+                "TaskHost"
+            );
         }
     }
 }
