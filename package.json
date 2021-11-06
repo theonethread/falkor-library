@@ -1,6 +1,6 @@
 {
   "name": "@falkor/falkor-library",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "description": "Shared operations library of the Falkor Framework",
   "author": {
     "name": "Barnabas Bucsy",
@@ -48,8 +48,8 @@
     "npm": ">=6"
   },
   "scripts": {
-    "debug": "rimraf .dist/**/* && falkor-bundler --debug",
-    "release": "rimraf .dist/**/* && falkor-bundler --release",
+    "debug": "rimraf .dist/**/* && falkor-bundler --debug --input src/index.ts",
+    "release": "rimraf .dist/**/* && falkor-bundler --release --input src/index.ts",
     "doc": "rimraf .doc/**/* && typedoc --hideGenerator --includeVersion --disableSources --excludePrivate --excludeExternals --name \"Falkor Operations Library\" --internalNamespace @internal --out .doc src/index.ts",
     "prepublishOnly": "npm ci && npm run release && npm run doc"
   },
