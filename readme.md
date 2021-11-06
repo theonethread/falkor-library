@@ -38,13 +38,13 @@ $ npm install
 $ npm run [ debug | release ]
 ```
 
-> _**SEE**: `"scripts"` entry in [`package.json`](https://github.com/theonethread/falkor-library/blob/master/package.json "Open")_
+> _**SEE:** `"scripts"` entry in [`package.json`](https://github.com/theonethread/falkor-library/blob/master/package.json "Open")_
 
-> _**NOTE**: Compiling the `develop` sources might need locally linked `develop` versions of downstream module:_
+> _**NOTE:** Compiling the `develop` sources might need locally linked `develop` versions of downstream module:_
 > 
 > * _[`@falkor/falkor-bundler`](https://github.com/theonethread/falkor-bundler/tree/develop "Visit")_
 > 
-> _**SEE**: [`npm-link`](https://docs.npmjs.com/cli/v7/commands/npm-link "Visit")_
+> _**SEE:** [`npm-link`](https://docs.npmjs.com/cli/v7/commands/npm-link "Visit")_
 
 ### **Documentation**
 
