@@ -32,7 +32,7 @@ To see all available settings, and also example `falkor-commander` and plugin cu
 The project uses the [`@falkor/falkor-bundler`](https://www.npmjs.com/package/@falkor/falkor-bundler "Visit") module to compile sources. To clone the repository and compile `falkor-library` one can use the commands:
 
 ```
-$ git clone git@github.com:theonethread/falkor-library.git
+$ git clone --branch develop git@github.com:theonethread/falkor-library.git
 $ cd falkor-library
 $ npm install
 $ npm run [ debug | release ]
