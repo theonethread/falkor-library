@@ -87,7 +87,7 @@ export class Util {
     }
 
     public toPosixPath(pathStr: string): string {
-        return pathStr.replace(this.posixReplacerRe, "/");
+        return pathStr.replace(this.posixReplacerRe, path.sep);
     }
 }
 
