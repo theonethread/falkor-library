@@ -2,7 +2,7 @@ import process from "process";
 import ScriptHost from "../script/ScriptHost.js";
 import FalkorError, { ExitCode } from "../error/FalkorError.js";
 import Brand from "../util/Brand.js";
-import falkorUtil from "../util/Util.js";
+import util from "../util/Util.js";
 
 export const enum TaskHostErrorCodes {
     SUBTASK_ABORT = "host-subtask-abort",
@@ -128,7 +128,7 @@ export default class TaskHost extends ScriptHost {
     }
 
     protected formatElapsedTime(): string {
-        return this.theme.formatTrace(`in ${falkorUtil.prettyTime(this.calcElapsedTime())}`);
+        return this.theme.formatTrace(`in ${util.prettyTime(this.calcElapsedTime())}`);
     }
 
     protected calcElapsedTime(): bigint {

@@ -5,7 +5,7 @@ import { TSubShell, TExecOptions, TExecReturnValue, TFetchReturnValue } from "..
 import { TAskOptions } from "../cli/Terminal.js";
 import Theme from "../util/Theme.js";
 import Logger from "../cli/Logger.js";
-import falkorUtil from "../util/Util.js";
+import util from "../util/Util.js";
 import Ascii from "../util/Ascii.js";
 
 export default abstract class Task {
@@ -34,7 +34,7 @@ export default abstract class Task {
 
     constructor(protected taskId: string, private readonly deps: TLazyCommandDependencies = null) {
         if (this.deps) {
-            falkorUtil.deepFreeze(this.deps);
+            util.deepFreeze(this.deps);
         }
     }
 
