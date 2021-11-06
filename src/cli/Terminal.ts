@@ -1,3 +1,4 @@
+import process from "process";
 import { Key } from "readline";
 import shell from "shelljs";
 import ansiEscapes from "ansi-escapes";
@@ -20,12 +21,13 @@ export type TAskOptions = {
     list?: boolean;
     multi?: boolean;
     timeout?: number;
+    allowNone?: boolean;
 };
 
 export default class Terminal extends BaseTerminal {
     protected readonly maxFailure = 5;
-    protected readonly numberRe = /^\d+$/;
-    protected readonly multipleNumberRe = /^\d+(\s*,\s*\d+)*$/;
+    protected readonly integerRe = /^\d+$/;
+    protected readonly multipleIntegerRe = /^\d+(\s*,\s*\d+)*$/;
     protected readonly multipleSplitRe = /\s*,\s*/;
     protected readonly listKeypressListener: (_: string, key: Key) => void;
     protected readonly listResizeListener: () => void;
@@ -72,6 +74,7 @@ export default class Terminal extends BaseTerminal {
         if (this.aborted) {
             return null;
         }
+
         this.asking = true;
         this.answerCount = 0;
         this.timedOutResponse = false;
@@ -82,15 +85,24 @@ export default class Terminal extends BaseTerminal {
             .clearCurrentPrompt();
         this.showCursor();
         let response: string | string[];
-        if (options) {
-            if (options.password) {
-                response = await this.getResponse(`${text}\n`, true);
-            } else if (options.answers) {
-                if (options.multi) {
-                    response = await this.getMultiAnswer(text, options.answers, options.descriptions || options.list);
-                } else {
-                    response = await this.getAnswer(text, options.answers, options.descriptions || options.list);
-                }
+        if (options?.password) {
+            response = await this.getResponse(`${text}\n`, true);
+        } else if (options?.answers) {
+            this.sanitizeOptionAnswers(options);
+            if (options.multi) {
+                response = await this.getMultiAnswer(
+                    text,
+                    options.answers,
+                    options.descriptions || options.list,
+                    options.allowNone
+                );
+            } else {
+                response = await this.getAnswer(
+                    text,
+                    options.answers,
+                    options.descriptions || options.list,
+                    options.allowNone
+                );
             }
         } else {
             response = await this.getResponse(`${text}\n`);
@@ -103,7 +115,12 @@ export default class Terminal extends BaseTerminal {
                         options?.password
                             ? "input stored"
                             : `${options?.answers ? "accepted " : ""}input: '${this.theme.formatQuestion(
-                                  Array.isArray(response) ? response.join(", ") : response
+                                  options.allowNone &&
+                                      ((Array.isArray(response) && response.length === 0) || response === "")
+                                      ? "NONE"
+                                      : Array.isArray(response)
+                                      ? response.join(", ")
+                                      : response
                               )}'`
                     )
                 )
@@ -118,23 +135,34 @@ export default class Terminal extends BaseTerminal {
     protected async getAnswer(
         text: string,
         answers: string[],
-        listDescriptions: string[] | boolean = false
+        listDescriptions: string[] | boolean = false,
+        allowNone: boolean = false
     ): Promise<string> {
         const type = listDescriptions ? ListType.NUMERIC : null;
         const response = await (listDescriptions
             ? this.getListResponse(text, answers, typeof listDescriptions === "boolean" ? null : listDescriptions, type)
             : this.getResponse(`${text} (${answers.join("/")})\n`));
-        const answer = this.validateAnswer(response, answers, type);
-        if (answer) {
+        const answer = this.validateAnswer(response, answers, type, allowNone);
+        if (answer || (allowNone && answer === "")) {
             return answer;
         }
         return this.failResponse(response, text, answers, listDescriptions, false) as Promise<string>;
     }
 
-    protected validateAnswer(response: string, answers: string[], type: ListType): string {
+    protected sanitizeOptionAnswers(options: TAskOptions): void {
+        const answers = new Set(options.answers);
+        if (answers.has("")) {
+            this.logger.warning("found empty string in answers, allowing NONE selection instead");
+            answers.delete("");
+            options.allowNone = true;
+        }
+        options.answers = Array.from(answers).sort();
+    }
+
+    protected validateAnswer(response: string, answers: string[], type: ListType, allowNone: boolean = false): string {
         if (response) {
             response = response.trim();
-            if (type === ListType.NUMERIC && this.numberRe.test(response)) {
+            if (type === ListType.NUMERIC && this.integerRe.test(response)) {
                 const index = parseInt(response) - 1;
                 if (index > -1 && index < answers.length) {
                     return answers[index];
@@ -145,6 +173,8 @@ export default class Terminal extends BaseTerminal {
             if (answers.includes(response)) {
                 return response;
             }
+        } else if (response === "" && allowNone) {
+            return "";
         }
         return null;
     }
@@ -152,28 +182,34 @@ export default class Terminal extends BaseTerminal {
     protected async getMultiAnswer(
         text: string,
         answers: string[],
-        listDescriptions: string[] | boolean = false
+        listDescriptions: string[] | boolean = false,
+        allowNone: boolean = false
     ): Promise<string[]> {
-        const type = listDescriptions ? ListType.MULTI_NUMERIC : null;
+        const listType = listDescriptions ? ListType.MULTI_NUMERIC : null;
         const response = listDescriptions
             ? await this.getListResponse(
                   text,
                   answers,
                   typeof listDescriptions === "boolean" ? null : listDescriptions,
-                  type
+                  listType
               )
             : await this.getResponse(`${text} (${answers.join("/")}) `);
-        const answer = this.validateMultiAnswer(response, answers, type);
+        const answer = this.validateMultiAnswer(response, answers, listType, allowNone);
         if (answer) {
             return answer;
         }
-        return this.failResponse(response, text, answers, listDescriptions, true) as Promise<string[]>;
+        return this.failResponse(response, text, answers, listDescriptions, true, allowNone) as Promise<string[]>;
     }
 
-    protected validateMultiAnswer(response: string, answers: string[], type: ListType): string[] {
+    protected validateMultiAnswer(
+        response: string,
+        answers: string[],
+        listType: ListType,
+        allowNone: boolean
+    ): string[] {
         if (response) {
             response = response.trim();
-            if (type === ListType.MULTI_NUMERIC && this.multipleNumberRe.test(response)) {
+            if (listType === ListType.MULTI_NUMERIC && this.multipleIntegerRe.test(response)) {
                 const indices = response
                     .split(this.multipleSplitRe)
                     .map((str) => parseInt(str) - 1)
@@ -192,6 +228,8 @@ export default class Terminal extends BaseTerminal {
                 .map((c) => answers.indexOf(c))
                 .sort()
                 .map((i) => answers[i]);
+        } else if (response === "" && allowNone) {
+            return [];
         }
         return null;
     }
@@ -273,7 +311,8 @@ export default class Terminal extends BaseTerminal {
         text: string,
         answers: string[],
         listDescriptions: string[] | boolean = false,
-        multi: boolean
+        multi: boolean = false,
+        allowNone: boolean = false
     ): Promise<string | string[]> {
         if (this.aborted) {
             return null;
@@ -292,7 +331,7 @@ export default class Terminal extends BaseTerminal {
                         `wrong answer '${response}', please provide list of available ones (or indices)`
                     )
                 );
-                return this.getMultiAnswer(text, answers, listDescriptions);
+                return this.getMultiAnswer(text, answers, listDescriptions, allowNone);
             } else {
                 shell.echo(
                     this.theme.formatFailure(
@@ -301,7 +340,7 @@ export default class Terminal extends BaseTerminal {
                         }`
                     )
                 );
-                return this.getAnswer(text, answers, listDescriptions);
+                return this.getAnswer(text, answers, listDescriptions, allowNone);
             }
         }
     }

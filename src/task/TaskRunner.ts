@@ -1,3 +1,4 @@
+import process from "process";
 import semver from "semver";
 import { RequestInit } from "node-fetch";
 
@@ -6,7 +7,7 @@ import { TAskOptions } from "../cli/Terminal.js";
 import TaskHost, { TaskHostErrorCodes } from "./TaskHost.js";
 import Task from "./Task.js";
 import Logger from "../cli/Logger.js";
-import FalkorError from "../error/FalkorError.js";
+import FalkorError, { ExitCode } from "../error/FalkorError.js";
 import Ascii from "../util/Ascii.js";
 import Theme from "../util/Theme.js";
 
@@ -66,12 +67,22 @@ export default class TaskRunner extends TaskHost {
         subtask: (title: string) => this.startSubtask(title),
         fetchText: (url: string, options: RequestInit = null) => this.fetchText(url, options),
         fetchJson: <T = any>(url: string, options: RequestInit = null) => this.fetchJson<T>(url, options),
-        success: (text: string) => this.endSubtaskSuccess(text),
-        abort: (text: string) => this.endSubtaskAbort(text),
-        error: (text: string) => this.endSubtaskError(text)
+        success: (text: string) => {
+            this.checkInvalidSubtaskClosing();
+            this.endSubtaskSuccess(text);
+        },
+        abort: (text: string) => {
+            this.checkInvalidSubtaskClosing();
+            this.endSubtaskAbort(text);
+        },
+        error: (text: string) => {
+            this.checkInvalidSubtaskClosing();
+            this.endSubtaskError(text);
+        }
     };
     // NOTE: throwing from the listener will not be caught by async try-catch
-    protected readonly sigintListener = () => this.handleError(this.endSubtaskAbort("received 'SIGINT'", false, true));
+    protected readonly sigintListener = () =>
+        this.handleError(this.endSubtaskAbort("received 'SIGINT'", false, true), true);
     protected currentSequence: string[];
     protected currentSequenceArguments: { [key: string]: { [key: string]: any } };
     protected currentIndex: number = null;
@@ -88,10 +99,20 @@ export default class TaskRunner extends TaskHost {
      */
     public register(task: Task): void {
         if (this.reservedTaskNames.includes(task.id)) {
-            throw new FalkorError(TaskRunnerErrorCodes.RESERVED_ID, `TaskRunner: reserved id '${task.id}'`);
+            throw new FalkorError(
+                TaskRunnerErrorCodes.RESERVED_ID,
+                `reserved id '${task.id}'`,
+                ExitCode.VALIDATION,
+                "TaskRunner"
+            );
         }
         if (this.collection[task.id]) {
-            throw new FalkorError(TaskRunnerErrorCodes.DUPLICATE_ID, `TaskRunner: duplicate id '${task.id}'`);
+            throw new FalkorError(
+                TaskRunnerErrorCodes.DUPLICATE_ID,
+                `duplicate id '${task.id}'`,
+                ExitCode.VALIDATION,
+                "TaskRunner"
+            );
         }
         this.collection[task.id] = task;
         task.setup(this.taskOptions);
@@ -124,7 +145,12 @@ export default class TaskRunner extends TaskHost {
         this.currentSequence.forEach((id: string) => {
             const task = this.collection[id];
             if (!task) {
-                throw new FalkorError(TaskRunnerErrorCodes.INVALID_ID, `TaskRunner: invalid task id '${id}'`);
+                throw new FalkorError(
+                    TaskRunnerErrorCodes.INVALID_ID,
+                    `invalid task id '${id}'`,
+                    ExitCode.VALIDATION,
+                    "TaskRunner"
+                );
             }
             if (task.dependencies) {
                 for (const key of Object.keys(task.dependencies)) {
@@ -219,7 +245,6 @@ export default class TaskRunner extends TaskHost {
     }
 
     protected handleError(error: Error, soft: boolean = false): Error | FalkorError {
-        this.logger.emptyPrompt(1);
         const isAbort = error instanceof FalkorError && error.code === TaskHostErrorCodes.SUBTASK_ABORT;
         if (isAbort) {
             this.logAbort();
@@ -230,7 +255,7 @@ export default class TaskRunner extends TaskHost {
             }
             return this.endSubtaskAbort("sequence aborted", true, soft, error);
         } else {
-            this.logError(error);
+            this.logError(error, soft);
             if (this.currentTask?.cancel) {
                 this.logger.pushPrompt();
                 this.currentTask.cancel(isAbort);
@@ -241,20 +266,13 @@ export default class TaskRunner extends TaskHost {
     }
 
     protected logAbort(): void {
-        this.logger.fatal(
-            `${this.abortPrompt} aborted ${this.theme.formatInfo(
-                `(${this.breadcrumbs}${this.currentTask ? this.breadcrumbJoiner + this.currentTask.id : ""})`
-            )}`
-        );
+        this.logger.fatal(`${this.abortPrompt} aborted ${this.theme.formatInfo(`(${this.breadcrumbs})`)}`);
     }
 
-    protected logError(error: Error): void {
-        this.logger
-            .fatal(
-                `${this.panicPrompt} failed ${this.theme.formatInfo(
-                    `(${this.breadcrumbs}${this.currentTask ? this.breadcrumbJoiner + this.currentTask.id : ""})`
-                )}`
-            )
-            .debug(`${this.debugPrompt} ${error.stack ? error.stack : error.name + ": " + error.message}`);
+    protected logError(error: Error, soft: boolean): void {
+        this.logger.fatal(`${this.panicPrompt} failed ${this.theme.formatInfo(`(${this.breadcrumbs})`)}`);
+        if (!soft) {
+            this.logger.debug(`${this.debugPrompt} ${error.stack ? error.stack : error.name + ": " + error.message}`);
+        }
     }
 }

@@ -1,4 +1,3 @@
-import { posix as path } from "path";
 import shell from "shelljs";
 import figlet from "figlet";
 import stripJsonComments from "strip-json-comments";
@@ -128,8 +127,13 @@ export default class Config {
     constructor() {
         this.opsFile = this.opsFileNames.find((f) => shell.test("-f", f)) || null;
         if (this.opsFile) {
-            this.externalConfig = JSON.parse(stripJsonComments(shell.cat(this.opsFile).toString()));
-            this.assign(this.config, this.externalConfig);
+            try {
+                this.externalConfig = JSON.parse(stripJsonComments(shell.cat(this.opsFile).toString()));
+                this.assign(this.config, this.externalConfig);
+            } catch (e) {
+                console.error(`External config error, check your ops-file (${this.opsFile})`);
+                this.opsFile = null;
+            }
         }
 
         falkorUtil.deepFreeze(this.config);
@@ -163,7 +167,7 @@ export default class Config {
 
     protected assignTheme(target: TConfig, source: TConfig): void {
         if (typeof source.theme === "string") {
-            this.themeFile = path.join(process.cwd(), source.theme);
+            this.themeFile = source.theme;
             const externalTheme = JSON.parse(shell.cat(source.theme));
             if (externalTheme === null) {
                 target.theme = null;

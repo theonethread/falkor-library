@@ -13,7 +13,7 @@ export default abstract class Task {
     protected logger: Logger;
     protected ascii: Ascii;
     protected shell: TSubShell;
-    protected ask: (text: string, options: TAskOptions) => Promise<string | string[]>;
+    protected ask: (text: string, options?: TAskOptions) => Promise<string | string[]>;
     protected exec: (command: string, options?: TExecOptions) => Promise<TExecReturnValue>;
     protected fetchText: (url: string, options?: RequestInit) => Promise<TFetchReturnValue<string>>;
     protected fetchJson: <T = any>(url: string, options?: RequestInit) => Promise<TFetchReturnValue<T>>;
@@ -59,5 +59,5 @@ export default abstract class Task {
 
     public abstract run(argv?: { [key: string]: any }, config?: any): Promise<void>;
 
-    public abstract cancel?(isAbort: boolean): void;
+    public cancel?(isAbort: boolean): void;
 }

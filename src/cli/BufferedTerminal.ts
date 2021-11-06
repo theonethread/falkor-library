@@ -16,6 +16,10 @@ export default class BufferedTerminal extends Terminal {
     }
 
     public async ask(text: string, options?: TAskOptions): Promise<string | string[]> {
+        if (this.aborted) {
+            return null;
+        }
+
         const buffered = this.buffer?.shift();
         if (buffered) {
             this.logger
@@ -23,24 +27,25 @@ export default class BufferedTerminal extends Terminal {
                 .notice(this.theme.formatQuestion(text))
                 .clearCurrentPrompt();
             let response: string | string[];
-            if (options) {
-                if (options.password) {
-                    this.logger.warning("using buffered password");
-                    response = buffered;
-                } else if (options.answers) {
-                    if (options.multi) {
-                        response = this.validateMultiAnswer(
-                            buffered,
-                            options.answers,
-                            options.descriptions || options.list ? ListType.MULTI_NUMERIC : null
-                        );
-                    } else {
-                        response = this.validateAnswer(
-                            buffered,
-                            options.answers,
-                            options.descriptions || options.list ? ListType.NUMERIC : null
-                        );
-                    }
+            if (options?.password) {
+                this.logger.warning("using buffered password");
+                response = buffered;
+            } else if (options?.answers) {
+                this.sanitizeOptionAnswers(options);
+                if (options.multi) {
+                    response = this.validateMultiAnswer(
+                        buffered,
+                        options.answers,
+                        options.descriptions || options.list ? ListType.MULTI_NUMERIC : null,
+                        options.allowNone
+                    );
+                } else {
+                    response = this.validateAnswer(
+                        buffered,
+                        options.answers,
+                        options.descriptions || options.list ? ListType.NUMERIC : null,
+                        options.allowNone
+                    );
                 }
             } else {
                 response = buffered;
@@ -52,7 +57,12 @@ export default class BufferedTerminal extends Terminal {
                             options?.password
                                 ? "buffered input stored"
                                 : `${options?.answers ? "accepted " : ""}buffered input: '${this.theme.formatQuestion(
-                                      Array.isArray(response) ? response.join(", ") : response
+                                      options.allowNone &&
+                                          ((Array.isArray(response) && response.length === 0) || response === "")
+                                          ? "NONE"
+                                          : Array.isArray(response)
+                                          ? response.join(", ")
+                                          : response
                                   )}'`
                         )
                     )
@@ -68,6 +78,7 @@ export default class BufferedTerminal extends Terminal {
                 .popPrompt();
             return null;
         }
+
         return super.ask(text, options);
     }
 }

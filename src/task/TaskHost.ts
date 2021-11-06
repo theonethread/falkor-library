@@ -1,11 +1,13 @@
+import process from "process";
 import ScriptHost from "../script/ScriptHost.js";
-import FalkorError from "../error/FalkorError.js";
+import FalkorError, { ExitCode } from "../error/FalkorError.js";
 import Brand from "../util/Brand.js";
 import falkorUtil from "../util/Util.js";
 
 export const enum TaskHostErrorCodes {
     SUBTASK_ABORT = "host-subtask-abort",
-    SUBTASK_ERROR = "host-subtask-error"
+    SUBTASK_ERROR = "host-subtask-error",
+    INVALID_SUBTASK_CLOSING = "host-subtask-closing"
 }
 
 export default class TaskHost extends ScriptHost {
@@ -19,8 +21,11 @@ export default class TaskHost extends ScriptHost {
     protected readonly errorPrompt = "[!]";
     protected readonly breadcrumbJoiner = " > ";
     protected readonly brand: Brand;
-    protected readonly times: [number, number][] = [];
+    protected readonly times: bigint[] = [];
     protected readonly subtaskTitles: string[] = [];
+    protected finalTaskCount = 1;
+    protected finalTimeCount = 1;
+    protected finalPromptCount = 1;
 
     public get breadcrumbs(): string {
         return this.subtaskTitles.join(this.breadcrumbJoiner);
@@ -43,7 +48,7 @@ export default class TaskHost extends ScriptHost {
     protected startSubtask(title: string): void {
         this.subtaskTitles.push(title);
         this.logger.info(`${this.theme.formatTask(`${this.taskPrompt} ${title}`)} starting`).pushPrompt();
-        this.times.push(process.hrtime());
+        this.times.push(process.hrtime.bigint());
     }
 
     protected endSubtaskSuccess(text: string): void {
@@ -51,7 +56,7 @@ export default class TaskHost extends ScriptHost {
             .info(
                 `${this.theme.formatTask(this.subtaskTitles.pop())} ${this.theme.formatSuccess(
                     "succeeded"
-                )} (${text} ${this.theme.formatTrace(`in ${falkorUtil.prettyTime(process.hrtime(this.times.pop()))}`)})`
+                )} (${text} ${this.formatElapsedTime()})`
             )
             .popPrompt();
     }
@@ -68,20 +73,19 @@ export default class TaskHost extends ScriptHost {
         }
         if (final) {
             this.aborted = true;
-            this.subtaskTitles.length = 1;
-            this.times.length = 1;
-            this.logger.emptyPrompt(1);
+            this.subtaskTitles.length = this.finalTaskCount;
+            this.times.length = this.finalTimeCount;
+            this.logger.emptyPrompt(this.finalTaskCount);
         }
         this.logger
             .warning(
                 `${this.theme.formatTask(this.subtaskTitles.pop())} subtask abort ${this.theme.formatInfo(
-                    `(${text} ${this.theme.formatTrace(
-                        `in ${falkorUtil.prettyTime(process.hrtime(this.times.pop()))}`
-                    )})`
+                    `(${text} ${this.formatElapsedTime()})`
                 )}`
             )
             .popPrompt();
-        const e = error || new FalkorError(TaskHostErrorCodes.SUBTASK_ABORT, "TaskHost: subtask abort");
+        const e =
+            error || new FalkorError(TaskHostErrorCodes.SUBTASK_ABORT, "subtask abort", ExitCode.ABORT, "TaskHost");
         if (soft) {
             return e;
         }
@@ -103,23 +107,43 @@ export default class TaskHost extends ScriptHost {
         }
         if (final) {
             this.aborted = true;
-            this.subtaskTitles.length = 1;
-            this.times.length = 1;
+            this.subtaskTitles.length = this.finalTaskCount;
+            this.times.length = this.finalTimeCount;
+            this.logger.emptyPrompt(this.finalPromptCount);
         }
         this.logger
             .error(
                 `${this.theme.formatTask(this.subtaskTitles.pop())} subtask error ${this.theme.formatInfo(
-                    `(${text} ${this.theme.formatTrace(
-                        `in ${falkorUtil.prettyTime(process.hrtime(this.times.pop()))}`
-                    )})`
+                    `(${text} ${this.formatElapsedTime()})`
                 )}`
             )
             .popPrompt();
-        const e = error || new FalkorError(TaskHostErrorCodes.SUBTASK_ERROR, "TaskHost: subtask error");
+        const e =
+            error || new FalkorError(TaskHostErrorCodes.SUBTASK_ERROR, "subtask error", ExitCode.GENERAL, "TaskHost");
         if (soft) {
             return e;
         }
         this.logger.debug(`${this.debugPrompt} throwing '${this.theme.formatFatal(TaskHostErrorCodes.SUBTASK_ERROR)}'`);
         throw e;
+    }
+
+    protected formatElapsedTime(): string {
+        return this.theme.formatTrace(`in ${falkorUtil.prettyTime(this.calcElapsedTime())}`);
+    }
+
+    protected calcElapsedTime(): bigint {
+        return process.hrtime.bigint() - this.times.pop();
+    }
+
+    /** @throws FalkorError: TaskHostErrorCodes.INVALID_SUBTASK_CLOSING */
+    protected checkInvalidSubtaskClosing() {
+        if (this.subtaskTitles.length <= this.finalTaskCount || this.times.length <= this.finalTimeCount) {
+            throw new FalkorError(
+                TaskHostErrorCodes.INVALID_SUBTASK_CLOSING,
+                "invalid subtask closing",
+                ExitCode.VALIDATION,
+                "TaskHost"
+            );
+        }
     }
 }

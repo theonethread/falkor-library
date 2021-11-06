@@ -12,18 +12,14 @@
 [![Snyk Vulnerabilities](https://img.shields.io/snyk/vulnerabilities/github/theonethread/falkor-library "Snyk")](https://snyk.io/test/github/theonethread/falkor-library "Visit") &nbsp;
 [![License](https://img.shields.io/npm/l/@falkor/falkor-library "MIT")](https://github.com/theonethread/falkor-library/blob/master/license.txt "Visit")
 
-```javascript
-// Work In Progress
-```
-
-The `falkor-library` project is a collection of devops terminal tools written in strict ES6 TypeScript to be used with the **Falkor Framework**.
+The `falkor-library` project is a collection of devops tools written in strict ES6 TypeScript to be used with the **Falkor Framework**.
 
 ## **Usage**
 
-See the following projects consuming `falkor-library`:
+See the following projects consuming the `falkor-library`:
 
-* [`@falkor/falkor-commander`](https://www.npmjs.com/package/@falkor/falkor-commander "Visit")
-* [`falkor-plugin-example`](https://github.com/theonethread/falkor-plugin-example "Visit")
+* [`@falkor/falkor-commander`](https://www.npmjs.com/package/@falkor/falkor-commander "Visit"): plugin based task runner / -sequencer
+* [`falkor-plugin-example`](https://github.com/theonethread/falkor-plugin-example/tree/master "Visit"): example `falkor-commander` plugin to demonstrate framework capabilities
 
 ### **Configuration**
 
@@ -54,9 +50,9 @@ Or one can visit the exported [online documentation](https://theonethread.github
 
 ### **Versioning and Branching Strategy**
 
-Release sources can be found on the `master` branch, this one always points to the latest tagged release. Previous sources of releases' can be found using Git version tags (or browsing GitHub releases). Released packages can be found on [npmjs](https://www.npmjs.com/package/@falkor/falkor-auth-server "Visit").
+Release sources can be found on the `master` branch, this one always points to the latest tagged release. Previous sources of releases can be found using Git version tags (or browsing GitHub releases). Released packages can be found on [npmjs](https://www.npmjs.com/package/@falkor/falkor-auth-server "Visit").
 
-The repository's main branch is `develop` (due to technical reasons), this holds all developments that are already decided to be included in the next release. Usually this branch is ahead of master one patch version (but based on upcoming features to include this can become minor, or major), so prepared external links may yet be broken.
+The repository's main branch is `develop` (due to technical reasons), this holds all developments that are already decided to be included in the next release. Usually this branch is ahead of `master` one patch version (but based on upcoming features to include this can become minor, or major), so prepared external links may yet be broken.
 
 The `feature/*` branches usually hold ideas and POC code, these will only be merged into `develop` once their impact measured and quality meets release requirements.
 
@@ -86,7 +82,7 @@ The latest sources can always be found on [GitHub](https://github.com/theonethre
 
 #### **Getting Involved**
 
-We believe - and we hope you do too - that learning how to code, how to think, and how to contribute to free- and open source software can empower the next generation of coders and creators. We **value** first time contributors just the same as rock stars of the OSS world, so if you're interested to get involved, just head over to our [Contribution Guidelines](https://github.com/theonethread/.github/blob/master/.github/contributing.md "Open") for a quick heads-up!
+We believe - and we hope you do too - that learning how to code, how to think, and how to contribute to free- and open source software can empower the next generation of coders and creators. We **value** first time contributors just the same as rock stars of the OSS world, so if you're interested in getting involved, just head over to our [Contribution Guidelines](https://github.com/theonethread/.github/blob/master/.github/contributing.md "Open") for a quick heads-up!
 
 #### **License**
 

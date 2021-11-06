@@ -1,6 +1,6 @@
 import ansiEscapes from "ansi-escapes";
 
-import FalkorError from "../error/FalkorError.js";
+import FalkorError, { ExitCode } from "../error/FalkorError.js";
 import Theme from "../util/Theme.js";
 
 export const enum TerminalAnimationErrorCodes {
@@ -31,12 +31,19 @@ export default class TerminalAnimation {
         protected frameMs: number = 500
     ) {
         if (frames.length < 2) {
-            throw new FalkorError(TerminalAnimationErrorCodes.FRAME_COUNT, "TerminalAnimation: not enough frames");
+            throw new FalkorError(
+                TerminalAnimationErrorCodes.FRAME_COUNT,
+                "not enough frames",
+                ExitCode.VALIDATION,
+                "TerminalAnimation"
+            );
         }
         if (frames.some((f) => /\n/.test(f))) {
             throw new FalkorError(
                 TerminalAnimationErrorCodes.INVALID_FRAME,
-                "TerminalAnimation: frame contains newline"
+                "frame contains newline",
+                ExitCode.VALIDATION,
+                "TerminalAnimation"
             );
         }
         this.endFrame = frames.length - 1;
@@ -51,7 +58,9 @@ export default class TerminalAnimation {
         if (padding < 0) {
             throw new FalkorError(
                 TerminalAnimationErrorCodes.PADDING,
-                "TerminalAnimation: started with negative padding"
+                "started with negative padding",
+                ExitCode.VALIDATION,
+                "TerminalAnimation"
             );
         }
         this.currentFrame = 0;
