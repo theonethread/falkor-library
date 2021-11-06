@@ -1,5 +1,3 @@
-import process from "process";
-import { posix as path } from "path";
 import shell from "shelljs";
 import figlet from "figlet";
 import stripJsonComments from "strip-json-comments";
@@ -133,7 +131,7 @@ export default class Config {
                 this.externalConfig = JSON.parse(stripJsonComments(shell.cat(this.opsFile).toString()));
                 this.assign(this.config, this.externalConfig);
             } catch (e) {
-                console.error(`External config error, check your ops-file (${path.join(process.cwd(), this.opsFile)})`);
+                console.error(`External config error, check your ops-file (${this.opsFile})`);
                 this.opsFile = null;
             }
         }
@@ -169,7 +167,7 @@ export default class Config {
 
     protected assignTheme(target: TConfig, source: TConfig): void {
         if (typeof source.theme === "string") {
-            this.themeFile = path.join(process.cwd(), source.theme);
+            this.themeFile = source.theme;
             const externalTheme = JSON.parse(shell.cat(source.theme));
             if (externalTheme === null) {
                 target.theme = null;

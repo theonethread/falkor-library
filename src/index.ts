@@ -5,4 +5,6 @@ import TaskRunner from "./task/TaskRunner.js";
 import util from "./util/Util.js";
 import { LogLevel } from "./cli/Logger.js";
 
-export { FalkorError, FalkorExitCode, TaskHost, TaskRunner, Task, util, LogLevel };
+util.init(import.meta.url);
+
+export { FalkorError, FalkorExitCode, TaskHost, TaskRunner, Task, LogLevel, util };

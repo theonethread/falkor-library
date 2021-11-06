@@ -131,8 +131,8 @@ export default class TaskHost extends ScriptHost {
         return this.theme.formatTrace(`in ${falkorUtil.prettyTime(this.calcElapsedTime())}`);
     }
 
-    protected calcElapsedTime(): number {
-        return Number(process.hrtime.bigint() - this.times.pop());
+    protected calcElapsedTime(): bigint {
+        return process.hrtime.bigint() - this.times.pop();
     }
 
     protected checkInvalidSubtaskClosing() {

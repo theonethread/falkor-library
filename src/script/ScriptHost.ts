@@ -1,10 +1,10 @@
 import { posix as path } from "path";
-import { fileURLToPath } from "url";
 import { ChildProcess } from "child_process";
 import shell from "shelljs";
 import fetch, { RequestInit } from "node-fetch";
 
 import Config from "../config/Config.js";
+import util from "../util/Util.js";
 import Logger, { LogLevel } from "../cli/Logger.js";
 import BufferedTerminal from "../cli/BufferedTerminal.js";
 import Ascii from "../util/Ascii.js";
@@ -27,11 +27,6 @@ export type TFetchReturnValue<T> = {
     body: T;
 };
 
-export type TModuleParameters = {
-    root: string;
-    params: { [key: string]: string };
-};
-
 export type TSubShell = {
     ShellString: typeof shell.ShellString;
     ls: typeof shell.ls;
@@ -52,7 +47,6 @@ export type TSubShell = {
 };
 
 export default class ScriptHost {
-    protected readonly cwd = process.cwd().replace(/\\/g, "/");
     protected readonly defaultExecOptions = {
         silent: true,
         async: true
@@ -113,7 +107,7 @@ export default class ScriptHost {
             .pushPrompt(this.commandPrompt)
             .notice(
                 this.theme.formatCommand(command),
-                `(cwd: ${this.theme.formatPath(options?.cwd ? path.join(this.cwd, options.cwd.toString()) : this.cwd)})`
+                `(cwd: ${this.theme.formatPath(options?.cwd ? path.join(util.cwd, options.cwd.toString()) : util.cwd)})`
             )
             .clearCurrentPrompt();
         const streamFn = this.terminal.startStream(options?.logLevel || LogLevel.DEBUG);
@@ -242,12 +236,5 @@ export default class ScriptHost {
             )["Content-Type"];
         }
         return options;
-    }
-
-    protected getModuleParameters(fileUrl: string, ...correctionSegments: string[]): TModuleParameters {
-        return {
-            root: path.join(path.dirname(fileURLToPath(fileUrl)), ...correctionSegments),
-            params: Object.fromEntries(new URL(fileUrl).searchParams)
-        };
     }
 }
