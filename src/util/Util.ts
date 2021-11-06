@@ -73,9 +73,6 @@ export class Util {
     }
 
     public getModuleParameters(fileUrl: string, ...correctionSegments: string[]): TModuleParameters {
-        console.log(fileUrl);
-        console.log(fileURLToPath(fileUrl));
-        console.log(path.dirname(this.toPosixPath(fileURLToPath(fileUrl))));
         return {
             root: path.join(path.dirname(this.toPosixPath(fileURLToPath(fileUrl))), ...correctionSegments),
             params: Object.fromEntries(new URL(fileUrl).searchParams)
