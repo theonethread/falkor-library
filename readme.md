@@ -46,6 +46,16 @@ $ npm run doc
 
 Or one can visit the exported [online documentation](https://theonethread.github.io/falkor-library-doc "Visit").
 
+### **Linting**
+
+The project uses [`prettier`](https://www.npmjs.com/package/prettier "Visit"), to lint sources and documentation run:
+
+```
+$ npm run lint
+```
+
+> _**SEE:** [`.prettierrc`](https://github.com/theonethread/falkor-library/blob/develop/.prettierrc "Open") for further reference._
+
 ### **Versioning and Branching Strategy**
 
 Release sources can be found on the `master` branch, this one always points to the latest tagged release. Previous sources of releases can be found using Git version tags (or browsing GitHub releases). Released packages can be found on [npmjs](https://www.npmjs.com/package/@falkor/falkor-auth-server "Visit").
