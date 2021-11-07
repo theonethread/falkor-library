@@ -9,7 +9,11 @@
     "npmjs",
     "typedoc",
     "sigint",
+    "codeql",
     "snyk",
+    "prettierrc",
+    "loglevel",
+    "parens",
     "falkorrc"
   ]
 }
