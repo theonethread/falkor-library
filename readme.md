@@ -48,13 +48,13 @@ Or one can visit the exported [online documentation](https://theonethread.github
 
 ### **Linting**
 
-The project uses [`prettier`](https://www.npmjs.com/package/prettier "Visit"), to lint sources and documentation run:
+The project uses [`prettier`](https://www.npmjs.com/package/prettier "Visit") for code formatting and [`cspell`](https://www.npmjs.com/package/cspell "Visit") to avoid general typos in both sources and documentation - it is advised to install these packages as extensions in your IDE to prevent CI errors beforehand. To lint the project run:
 
 ```
 $ npm run lint
 ```
 
-> _**SEE:** [`.prettierrc`](https://github.com/theonethread/falkor-library/blob/develop/.prettierrc "Open") for further reference._
+> _**SEE:** [`.prettierrc`](https://github.com/theonethread/falkor-auth-server/blob/develop/.prettierrc "Open") and [`.cspell.json`](https://github.com/theonethread/falkor-auth-server/blob/develop/.cspell.json "Open") for further reference._
 
 ### **Versioning and Branching Strategy**
 
