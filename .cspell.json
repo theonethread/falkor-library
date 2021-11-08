@@ -1,8 +1,10 @@
 {
-  "cSpell.words": [
+  "version": "0.2",
+  "language": "en",
+  "words": [
+    "falkor",
     "Bucsy",
     "endregion",
-    "falkor",
     "jscc",
     "streamable",
     "theonethread",
@@ -11,6 +13,7 @@
     "sigint",
     "codeql",
     "snyk",
+    "betit",
     "prettierrc",
     "loglevel",
     "parens",

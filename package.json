@@ -50,7 +50,7 @@
   "scripts": {
     "debug": "rimraf .dist/**/* && falkor-bundler --debug --input src/index.ts",
     "release": "rimraf .dist/**/* && falkor-bundler --release --input src/index.ts",
-    "lint": "prettier --check .",
+    "lint": "prettier --check . && cspell lint --no-progress --wordsOnly --unique --gitignore --exclude .git ** .*",
     "doc": "rimraf .doc/**/* && typedoc --hideGenerator --includeVersion --disableSources --excludePrivate --excludeExternals --name \"Falkor Operations Library\" --internalNamespace @internal --out .doc src/index.ts",
     "prepublishOnly": "npm ci && npm run lint && npm run release && npm run doc"
   },
@@ -62,6 +62,7 @@
     "@types/semver": "7.3.9",
     "rimraf": "3.0.2",
     "prettier": "2.4.1",
+    "cspell": "5.12.6",
     "typedoc": "0.22.7",
     "typedoc-plugin-rename-defaults": "0.4.0",
     "typedoc-plugin-missing-exports": "0.22.3",
