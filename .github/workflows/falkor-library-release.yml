@@ -33,7 +33,6 @@ jobs:
       - name: Install Npm Dependencies
         run: |-
           npm ci --ignore-scripts
-          npm ls -all
 
       - name: Lint Project
         run: |-
