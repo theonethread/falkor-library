@@ -33,10 +33,15 @@ jobs:
       - name: Install Npm Dependencies
         run: |-
           npm ci --ignore-scripts
-          npm ls typescript --all
+
+      - name: Install Npm Peer Dependencies
+        if: ${{ matrix.node-version == '14.x' }}
+        run: |-
+          npm install typescript@4.4.4 --no-save
 
       - name: Lint Project
         run: |-
+          npm ls typescript --all
           npm run lint
 
       - name: Bundle Custom Project
