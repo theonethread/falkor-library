@@ -1,4 +1,5 @@
 import process from "process";
+import os from "os";
 import { posix as path } from "path";
 import { fileURLToPath } from "url";
 import prettyTime from "pretty-time";
@@ -14,9 +15,14 @@ export class Util {
     protected moduleParameters: TModuleParameters;
     protected initialized: boolean = false;
     protected _cwd: string;
+    protected _homedir: string;
 
     public get cwd(): string {
         return this._cwd;
+    }
+
+    public get homedir(): string {
+        return this._homedir;
     }
 
     public get root(): string {
@@ -36,6 +42,7 @@ export class Util {
         // <root>/node_modules/@falkor/falkor-library/.dist
         this.moduleParameters = this.getModuleParameters(fileUrl, "../../../..");
         this._cwd = this.toPosixPath(process.cwd());
+        this._homedir = this.toPosixPath(os.homedir());
         this.initialized = true;
     }
 
@@ -80,7 +87,7 @@ export class Util {
     }
 
     public toPosixPath(pathStr: string): string {
-        return pathStr.replace(this.posixReplacerRe, "/");
+        return pathStr.replace(this.posixReplacerRe, path.sep);
     }
 }
 

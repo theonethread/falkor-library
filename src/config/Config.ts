@@ -1,8 +1,9 @@
+import { posix as path } from "path";
 import shell from "shelljs";
 import figlet from "figlet";
 import stripJsonComments from "strip-json-comments";
 
-import falkorUtil from "../util/Util.js";
+import util from "../util/Util.js";
 import { LogLevel } from "../cli/Logger.js";
 
 export type TTerminalConfig = {
@@ -125,7 +126,14 @@ export default class Config {
     }
 
     constructor() {
+        // 1. search cwd
         this.opsFile = this.opsFileNames.find((f) => shell.test("-f", f)) || null;
+        if (!this.opsFile) {
+            // 2. search homedir
+            this.opsFile =
+                this.opsFileNames.map((f) => path.join(util.homedir, f)).find((f) => shell.test("-f", f)) || null;
+        }
+
         if (this.opsFile) {
             try {
                 this.externalConfig = JSON.parse(stripJsonComments(shell.cat(this.opsFile).toString()));
@@ -136,9 +144,9 @@ export default class Config {
             }
         }
 
-        falkorUtil.deepFreeze(this.config);
+        util.deepFreeze(this.config);
         if (this.externalConfig && Object.getOwnPropertyNames(this.externalConfig).length) {
-            falkorUtil.deepFreeze(this.externalConfig);
+            util.deepFreeze(this.externalConfig);
         } else {
             this.externalConfig = null;
         }
