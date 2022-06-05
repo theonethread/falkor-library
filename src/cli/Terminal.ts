@@ -28,7 +28,8 @@ export default class Terminal extends BaseTerminal {
     protected readonly maxFailure = 5;
     protected readonly integerRe = /^\d+$/;
     protected readonly multipleIntegerRe = /^\d+(\s*,\s*\d+)*$/;
-    protected readonly multipleSplitRe = /\s*,\s*/;
+    protected readonly multipleSpaceRe = /\s+/;
+    protected readonly multipleSplitRe = /\s?,\s?/;
     protected readonly listKeypressListener: (_: string, key: Key) => void;
     protected readonly listResizeListener: () => void;
     protected readonly questionPrompt: string;
@@ -210,8 +211,7 @@ export default class Terminal extends BaseTerminal {
         if (response) {
             response = response.trim();
             if (listType === ListType.MULTI_NUMERIC && this.multipleIntegerRe.test(response)) {
-                const indices = response
-                    .split(this.multipleSplitRe)
+                const indices = this.splitMultiResponse(response)
                     .map((str) => parseInt(str) - 1)
                     .sort();
                 const len = answers.length;
@@ -220,7 +220,7 @@ export default class Terminal extends BaseTerminal {
                 }
                 return indices.map((i) => answers[i]);
             }
-            const candidates = response.split(this.multipleSplitRe);
+            const candidates = this.splitMultiResponse(response);
             if (candidates.some((c) => !answers.includes(c))) {
                 return null;
             }
@@ -560,6 +560,14 @@ export default class Terminal extends BaseTerminal {
             );
         }
         this.renderListHighlight(this.selectionList.length - this.selection, this.selectionList[this.selection]);
+    }
+
+    //#endregion
+
+    //#region HELPERS
+
+    protected splitMultiResponse(response: string): string[] {
+        return response.replace(this.multipleSpaceRe, " ").split(this.multipleSplitRe);
     }
 
     //#endregion

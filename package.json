@@ -60,6 +60,7 @@
     "@types/shelljs": "0.8.11",
     "@types/figlet": "1.5.4",
     "@types/semver": "7.3.9",
+    "@types/ansi-escapes": "4.0.0",
     "rimraf": "3.0.2",
     "prettier": "2.6.2",
     "cspell": "6.1.1",
