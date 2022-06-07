@@ -15,7 +15,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        node-version: [14.x, 16.x]
+        node-version: [16.x, 18.x]
         os: [ubuntu-latest, windows-latest, macOS-latest]
 
     runs-on: ${{ matrix.os }}
@@ -34,10 +34,10 @@ jobs:
         run: |-
           npm ci --ignore-scripts
 
-      - name: Install Npm Peer Dependencies (for npm v6)
-        if: ${{ matrix.node-version == '14.x' }}
-        run: |-
-          npm install typescript@4.4.4 --no-save
+      # - name: Install Npm Peer Dependencies (for npm v6)
+      #   if: ${{ matrix.node-version == '14.x' }}
+      #   run: |-
+      #     npm install typescript@4.4.4 --no-save
 
       - name: List Packages Installed
         continue-on-error: true
