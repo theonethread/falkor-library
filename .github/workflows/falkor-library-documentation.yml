@@ -14,7 +14,7 @@ jobs:
         with:
           path: ./falkor-library
 
-      - name: Use Node.js v16.x
+      - name: Use Node.js v18.x
         uses: actions/setup-node@v2
         with:
           node-version: 16.x
