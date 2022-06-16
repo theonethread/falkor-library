@@ -202,7 +202,7 @@ export default class TaskRunner extends TaskHost {
                 if (!ret.success) {
                     this.endSubtaskError(`failed dependency '${dep}'`);
                 }
-                const v = ret.output.match(d.versionMatch);
+                const v = ret.result.out.match(d.versionMatch);
                 if (!v) {
                     this.endSubtaskError(`failed version check '${this.theme.formatCommand(dep)}': ${d.versionMatch}`);
                 }
