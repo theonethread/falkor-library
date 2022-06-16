@@ -18,7 +18,7 @@ export type TExecOptions = {
 export type TExecReturnValue = {
     success: boolean;
     code: number;
-    output: string;
+    result: { out: string; err: string };
 };
 
 export type TFetchReturnValue<T> = {
@@ -119,13 +119,13 @@ export default class ScriptHost {
             child.stdout.on("data", (chunk) => streamFn(chunk));
             child.stderr.on("data", (chunk) => streamFn(chunk, true));
             child.once("close", (code: number) => {
-                const output = this.terminal.endStream();
+                const result = this.terminal.endStream();
                 child.stdout.removeAllListeners("data");
                 child.stderr.removeAllListeners("data");
                 if (code !== 0) {
                     if (options?.noError) {
                         for (const pattern of options.noError) {
-                            if (pattern.test(output)) {
+                            if (pattern.test(result.err)) {
                                 this.logger
                                     .notice(
                                         `${this.theme.formatSuccess(
@@ -136,7 +136,7 @@ export default class ScriptHost {
                                 return resolve({
                                     success: true,
                                     code,
-                                    output
+                                    result
                                 });
                             }
                         }
@@ -145,14 +145,14 @@ export default class ScriptHost {
                     return resolve({
                         success: false,
                         code,
-                        output
+                        result
                     });
                 }
                 this.logger.notice(`${this.theme.formatSuccess("succeeded")} (code: 0)`).popPrompt();
                 return resolve({
                     success: true,
                     code,
-                    output
+                    result
                 });
             });
         });

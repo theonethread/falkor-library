@@ -26,7 +26,8 @@ export default class BaseTerminal {
     protected streaming: boolean = false;
     protected streamLevel: number = null;
     protected streamPad: number = null;
-    protected streamBuffer: string = null;
+    protected streamOutBuffer: string = null;
+    protected streamErrBuffer: string = null;
     protected lineBuffer: string = null;
     protected terminalAnimation: TerminalAnimation = null;
 
@@ -95,18 +96,27 @@ export default class BaseTerminal {
     public startStream(level: LogLevel): (chunk: string, isError?: boolean) => void {
         this.streaming = true;
         this.streamLevel = level;
-        this.streamBuffer = "";
+        this.streamErrBuffer = "";
+        this.streamOutBuffer = "";
         const prefix = this.logger.log(level, [this.streamPrefix], true);
         this.streamPad = prefix ? stripAnsi(prefix).length : null;
         this.logger.startStream();
         if (!this.ansi) {
             return (chunk: string, isError?: boolean) => {
-                this.streamBuffer += isError ? this.theme.formatSeverityError(level, chunk) : chunk;
+                if (isError) {
+                    this.streamErrBuffer += this.theme.formatSeverityError(level, chunk);
+                } else {
+                    this.streamOutBuffer += chunk;
+                }
             };
         } else if (this.streamPad === null) {
             this.terminalAnimation?.start(this.logger.getCurrentPad());
             return (chunk: string, isError?: boolean) => {
-                this.streamBuffer += isError ? this.theme.formatSeverityError(level, chunk) : chunk;
+                if (isError) {
+                    this.streamErrBuffer += this.theme.formatSeverityError(level, chunk);
+                } else {
+                    this.streamOutBuffer += chunk;
+                }
             };
         } else {
             this.logger.logAnsi(prefix);
@@ -115,8 +125,14 @@ export default class BaseTerminal {
             if (this.terminalAnimation) {
                 this.terminalAnimation.start();
                 return (chunk: string, isError?: boolean) => {
-                    const formatted = isError ? this.theme.formatSeverityError(level, chunk) : chunk;
-                    this.streamBuffer += formatted;
+                    let formatted: string;
+                    if (isError) {
+                        formatted = this.theme.formatSeverityError(level, chunk);
+                        this.streamErrBuffer += formatted;
+                    } else {
+                        formatted = chunk;
+                        this.streamOutBuffer += formatted;
+                    }
                     this.terminalAnimation.clearFrame();
                     const streamed = this.theme.formatSeverity(
                         level,
@@ -128,8 +144,14 @@ export default class BaseTerminal {
                 };
             } else {
                 return (chunk: string, isError?: boolean) => {
-                    const formatted = isError ? this.theme.formatSeverityError(level, chunk) : chunk;
-                    this.streamBuffer += formatted;
+                    let formatted: string;
+                    if (isError) {
+                        formatted = this.theme.formatSeverityError(level, chunk);
+                        this.streamErrBuffer += formatted;
+                    } else {
+                        formatted = chunk;
+                        this.streamOutBuffer += formatted;
+                    }
                     const streamed = this.theme.formatSeverity(
                         level,
                         this.logger.padNewLines(formatted, this.streamPad, this.streamPrefix)
@@ -141,7 +163,7 @@ export default class BaseTerminal {
         }
     }
 
-    public endStream(): string {
+    public endStream(): { out: string; err: string } {
         this.terminalAnimation?.stop();
         this.logger.endStream();
         if (this.streamPad !== null) {
@@ -151,7 +173,13 @@ export default class BaseTerminal {
             } else {
                 this.logger.log(this.streamLevel, [
                     this.logger.padNewLines(
-                        this.streamPrefix + this.streamBuffer,
+                        this.streamPrefix + this.streamOutBuffer,
+                        this.streamPrefix.length,
+                        this.streamPrefix
+                    ),
+
+                    this.logger.padNewLines(
+                        this.streamPrefix + this.streamErrBuffer,
                         this.streamPrefix.length,
                         this.streamPrefix
                     )
@@ -159,9 +187,13 @@ export default class BaseTerminal {
             }
         }
 
-        const ret = this.streamBuffer;
+        const ret = {
+            out: this.streamOutBuffer,
+            err: this.streamErrBuffer
+        };
         this.streamLevel = null;
-        this.streamBuffer = null;
+        this.streamOutBuffer = null;
+        this.streamErrBuffer = null;
         this.lineBuffer = null;
         this.streamPad = null;
         this.streaming = false;
