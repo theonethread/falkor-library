@@ -64,7 +64,7 @@
     "rimraf": "3.0.2",
     "prettier": "2.7.1",
     "cspell": "6.1.2",
-    "typedoc": "0.22.17",
+    "typedoc": "0.22.18",
     "typedoc-plugin-rename-defaults": "0.5.1",
     "typedoc-plugin-missing-exports": "0.22.6",
     "@falkor/falkor-bundler": "1.2.1"
