@@ -78,7 +78,7 @@
     "semver": "7.3.7",
     "pretty-time": "1.1.0",
     "shelljs": "0.8.5",
-    "node-fetch": "3.2.6"
+    "node-fetch": "3.2.7"
   },
   "optionalDependencies": {
     "@types/shelljs": "0.8.11",
