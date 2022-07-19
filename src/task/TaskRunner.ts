@@ -53,7 +53,7 @@ export const enum TaskRunnerErrorCodes {
 }
 
 export default class TaskRunner extends TaskHost {
-    protected readonly reservedTaskNames = ["exit"];
+    protected readonly reservedTaskNames = ["init", "exit"];
     protected readonly prefix = this.theme.formatBrand("FALKOR:");
     protected readonly versionRe = /version\s*([^\s]+)/;
     protected readonly collection: { [id: string]: Task } = {};
