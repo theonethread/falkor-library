@@ -55,7 +55,7 @@
     "prepublishOnly": "npm ci --ignore-scripts && npm run lint && npm run release && npm run doc"
   },
   "devDependencies": {
-    "@types/node": "18.7.18",
+    "@types/node": "18.7.19",
     "@types/pretty-time": "1.1.2",
     "@types/shelljs": "0.8.11",
     "@types/figlet": "1.5.5",
@@ -63,8 +63,8 @@
     "@types/ansi-escapes": "4.0.0",
     "rimraf": "3.0.2",
     "prettier": "2.7.1",
-    "cspell": "6.8.2",
-    "typedoc": "0.23.14",
+    "cspell": "6.10.1",
+    "typedoc": "0.23.15",
     "typedoc-plugin-rename-defaults": "0.6.4",
     "typedoc-plugin-missing-exports": "1.0.0",
     "@falkor/falkor-bundler": "1.2.3"
@@ -72,7 +72,7 @@
   "dependencies": {
     "chalk": "5.0.1",
     "strip-ansi": "7.0.1",
-    "ansi-escapes": "5.0.0",
+    "ansi-escapes": "6.0.0",
     "strip-json-comments": "5.0.0",
     "figlet": "1.5.2",
     "semver": "7.3.7",
