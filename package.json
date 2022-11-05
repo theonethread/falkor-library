@@ -44,9 +44,10 @@
     "win32"
   ],
   "engines": {
-    "node": ">=14",
-    "npm": ">=6"
+    "node": ">=16",
+    "npm": ">=8"
   },
+  "engineStrict": true,
   "scripts": {
     "debug": "rimraf .dist/**/* && falkor-bundler --debug --input src/index.ts",
     "release": "rimraf .dist/**/* && falkor-bundler --release --input src/index.ts",
