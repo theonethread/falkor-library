@@ -32,12 +32,7 @@ jobs:
 
       - name: Install Npm Dependencies
         run: |-
-          npm clean-install --ignore-scripts
-
-      # - name: Install Npm Peer Dependencies (for npm v6)
-      #   if: ${{ matrix.node-version == '14.x' }}
-      #   run: |-
-      #     npm install typescript@4.4.4 --no-save
+          npm clean-install --ignore-scripts --fund false
 
       - name: List Packages Installed
         continue-on-error: true
