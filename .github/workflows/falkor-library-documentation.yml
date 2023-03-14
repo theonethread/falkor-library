@@ -17,14 +17,13 @@ jobs:
       - name: Use Node.js v18.x
         uses: actions/setup-node@v2
         with:
-          node-version: 16.x
+          node-version: 18.x
           cache: npm
-          cache-dependency-path: falkor-library/package-lock.json
 
       - name: Install Npm Dependencies
         run: |-
           cd ./falkor-library
-          npm clean-install --ignore-scripts --fund false
+          npm install --ignore-scripts --fund false
           cd ..
 
       - name: Build Documentation
