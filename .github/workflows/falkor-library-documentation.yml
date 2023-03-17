@@ -10,12 +10,12 @@ jobs:
 
     steps:
       - name: GitHub Checkout
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
         with:
           path: ./falkor-library
 
       - name: Use Node.js v18.x
-        uses: actions/setup-node@v2
+        uses: actions/setup-node@v3
         with:
           node-version: 18.x
           cache: npm
@@ -33,7 +33,7 @@ jobs:
           cd ..
 
       - name: Checkout Remote Documentation
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
         with:
           repository: theonethread/falkor-library-doc
           path: ./falkor-library-doc
