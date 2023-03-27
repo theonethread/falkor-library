@@ -18,7 +18,8 @@ jobs:
         uses: actions/setup-node@v3
         with:
           node-version: 18.x
-          cache: npm
+          # NOTE: since the monorepo setup separate projects do not use npm cache
+          # cache: npm
 
       - name: Install Npm Dependencies
         run: |-
