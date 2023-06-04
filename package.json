@@ -52,7 +52,7 @@
     "debug": "rimraf .dist && falkor-bundler --debug --input src/index.ts",
     "release": "rimraf .dist && falkor-bundler --release --input src/index.ts",
     "lint": "prettier --check . && cspell lint --no-progress --wordsOnly --unique --gitignore --exclude .git ** .*",
-    "doc": "rimraf .doc && typedoc --hideGenerator --includeVersion --disableSources --excludePrivate --excludeExternals --name \"Falkor Operations Library\" --internalModule @internal --out .doc src/index.ts",
+    "doc": "rimraf .doc && typedoc --hideGenerator --includeVersion --disableSources --excludePrivate --excludeExternals --plugin typedoc-plugin-missing-exports --plugin typedoc-plugin-rename-defaults --name \"Falkor Operations Library\" --internalModule @internal --out .doc src/index.ts",
     "prepublishOnly": "npm install --ignore-scripts --fund false && npm run lint && npm run release && npm run doc"
   },
   "devDependencies": {
