@@ -63,11 +63,11 @@
     "@types/semver": "7.5.0",
     "@types/ansi-escapes": "4.0.0",
     "rimraf": "5.0.1",
-    "prettier": "2.8.8",
-    "cspell": "6.31.1",
     "typedoc": "0.24.7",
     "typedoc-plugin-rename-defaults": "0.6.5",
     "typedoc-plugin-missing-exports": "2.0.0",
+    "@falkor/falkor-cspell-config": "0.0.1",
+    "@falkor/falkor-prettier-config": "0.0.1",
     "@falkor/falkor-bundler": "1.2.3"
   },
   "dependencies": {
